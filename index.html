@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="https://www.pristinepearlpharma.in/images/alt-logo.png">
+<title>CartonFlow — Pristine Pearl Pharma</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f0f2f7;--surface:#fff;--surface2:#f7f8fc;--surface3:#eef0f8;--border:#e2e5f0;--border2:#d0d5e8;--accent:#2563eb;--accent-light:#eff4ff;--accent-hover:#1d4ed8;--green:#16a34a;--green-light:#f0fdf4;--amber:#d97706;--amber-light:#fffbeb;--red:#dc2626;--red-light:#fef2f2;--purple:#7c3aed;--purple-light:#f5f3ff;--cyan:#0891b2;--cyan-light:#ecfeff;--teal:#0d9488;--teal-light:#f0fdfa;--pink:#db2777;--pink-light:#fdf2f8;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--text4:#cbd5e1;--shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);--shadow:0 4px 16px rgba(0,0,0,.07),0 1px 4px rgba(0,0,0,.04);--shadow-lg:0 16px 48px rgba(0,0,0,.12),0 4px 16px rgba(0,0,0,.06)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+#sidebar{position:fixed;left:0;top:0;bottom:0;width:248px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;box-shadow:2px 0 12px rgba(0,0,0,.04)}
+.logo{padding:18px 14px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-img{width:44px;height:44px;object-fit:contain;flex-shrink:0;border-radius:8px}
+.logo-mark{font-size:13px;font-weight:800;color:var(--text);letter-spacing:-.2px;line-height:1.2}
+.logo-mark span{color:var(--accent)}
+.logo-sub{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:1px;margin-top:2px}
+.nav{padding:10px 8px;flex:1;overflow-y:auto}
+.nav-section{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text4);letter-spacing:2px;padding:10px 10px 4px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:9px;cursor:pointer;color:var(--text2);font-size:13.5px;font-weight:500;transition:.15s;margin-bottom:1px;border:1px solid transparent}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--accent-light);color:var(--accent);border-color:rgba(37,99,235,.15);font-weight:600}
+.nav-item svg{width:15px;height:15px;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--accent);color:#fff;font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
+.nav-badge.amb{background:var(--amber)}.nav-badge.grn{background:var(--green)}.nav-badge.cyn{background:var(--cyan)}.nav-badge.red{background:var(--red)}
+.sidebar-footer{padding:10px 8px;border-top:1px solid var(--border)}
+.inv-summary{background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:12px;padding:12px 14px}
+.inv-summary-label{font-size:9px;color:rgba(255,255,255,.65);font-family:'JetBrains Mono',monospace;letter-spacing:1px}
+.inv-summary-val{font-size:18px;font-weight:800;color:#fff;margin-top:2px;line-height:1.2}
+.inv-summary-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px}
+#main{margin-left:248px;min-height:100vh}
+.topbar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.95);backdrop-filter:blur(8px);position:sticky;top:0;z-index:50;box-shadow:var(--shadow-sm)}
+.page-title{font-size:16px;font-weight:700;color:var(--text)}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s;border:none;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-hover);box-shadow:0 4px 12px rgba(37,99,235,.3)}
+.btn-ghost{background:transparent;color:var(--text2);border:1.5px solid var(--border2)}.btn-ghost:hover{background:var(--surface2);color:var(--text)}
+.btn-green{background:var(--green-light);color:var(--green);border:1.5px solid #bbf7d0}.btn-green:hover{background:#dcfce7}
+.btn-amber{background:var(--amber-light);color:var(--amber);border:1.5px solid #fde68a}.btn-amber:hover{background:#fef3c7}
+.btn-red{background:var(--red-light);color:var(--red);border:1.5px solid #fecaca}.btn-red:hover{background:#fee2e2}
+.btn-cyan{background:var(--cyan-light);color:var(--cyan);border:1.5px solid #a5f3fc}.btn-cyan:hover{background:#cffafe}
+.btn-purple{background:var(--purple-light);color:var(--purple);border:1.5px solid #ddd6fe}.btn-purple:hover{background:#ede9fe}
+.btn-teal{background:var(--teal-light);color:var(--teal);border:1.5px solid #99f6e4}.btn-teal:hover{background:#ccfbf1}
+.btn-sm{padding:5px 10px;font-size:12px}.btn svg{width:13px;height:13px}.btn:disabled{opacity:.5;cursor:not-allowed}
+.content{padding:22px 26px}.page{display:none}.page.active{display:block}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stats-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;box-shadow:var(--shadow-sm);transition:.2s}
+.stat-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.stat-stripe{position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.stat-stripe.blue{background:linear-gradient(90deg,#2563eb,#60a5fa)}.stat-stripe.green{background:linear-gradient(90deg,#16a34a,#4ade80)}
+.stat-stripe.amber{background:linear-gradient(90deg,#d97706,#fbbf24)}.stat-stripe.purple{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
+.stat-stripe.cyan{background:linear-gradient(90deg,#0891b2,#67e8f9)}.stat-stripe.red{background:linear-gradient(90deg,#dc2626,#f87171)}
+.stat-stripe.teal{background:linear-gradient(90deg,#0d9488,#2dd4bf)}.stat-stripe.pink{background:linear-gradient(90deg,#db2777,#f472b6)}
+.stat-label{font-size:10.5px;color:var(--text3);font-family:'JetBrains Mono',monospace;letter-spacing:.5px;margin-top:2px}
+.stat-val{font-size:28px;font-weight:800;margin-top:6px;color:var(--text);line-height:1}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.stat-icon{position:absolute;right:16px;top:16px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.stat-icon.blue{background:var(--accent-light);color:var(--accent)}.stat-icon.green{background:var(--green-light);color:var(--green)}
+.stat-icon.amber{background:var(--amber-light);color:var(--amber)}.stat-icon.purple{background:var(--purple-light);color:var(--purple)}
+.stat-icon.cyan{background:var(--cyan-light);color:var(--cyan)}.stat-icon.red{background:var(--red-light);color:var(--red)}
+.stat-icon.teal{background:var(--teal-light);color:var(--teal)}.stat-icon.pink{background:var(--pink-light);color:var(--pink)}
+.stat-icon svg{width:17px;height:17px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface);flex-wrap:wrap;gap:8px}
+.card-title{font-size:13.5px;font-weight:700;color:var(--text)}
+.card-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;transition:.15s}
+.search-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.search-box svg{width:13px;height:13px;color:var(--text3);flex-shrink:0}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-size:12.5px;font-family:'Plus Jakarta Sans',sans-serif;width:140px}
+.search-box input::placeholder{color:var(--text3)}
+.type-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.type-tab{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);transition:.15s;font-family:'Plus Jakarta Sans',sans-serif}
+.type-tab:hover{background:var(--surface2)}
+.type-tab.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
+.type-tab.mfr.active{background:var(--purple-light);color:var(--purple);border-color:var(--purple)}
+.type-tab.sup.active{background:var(--green-light);color:var(--green);border-color:var(--green)}
+.type-tab.cust.active{background:var(--amber-light);color:var(--amber);border-color:var(--amber)}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 14px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text3);letter-spacing:.5px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2)}
+td{padding:10px 14px;font-size:13px;color:var(--text);border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}tr:hover td{background:#fafbfe}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-family:'JetBrains Mono',monospace;font-weight:500;white-space:nowrap}
+.badge-green{background:var(--green-light);color:var(--green);border:1px solid #bbf7d0}
+.badge-red{background:var(--red-light);color:var(--red);border:1px solid #fecaca}
+.badge-amber{background:var(--amber-light);color:var(--amber);border:1px solid #fde68a}
+.badge-blue{background:var(--accent-light);color:var(--accent);border:1px solid #bfdbfe}
+.badge-purple{background:var(--purple-light);color:var(--purple);border:1px solid #ddd6fe}
+.badge-cyan{background:var(--cyan-light);color:var(--cyan);border:1px solid #a5f3fc}
+.badge-teal{background:var(--teal-light);color:var(--teal);border:1px solid #99f6e4}
+.badge-pink{background:var(--pink-light);color:var(--pink);border:1px solid #fbcfe8}
+.form-grid{display:grid;gap:13px}
+.form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:13px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text2);letter-spacing:.5px;font-weight:500}
+.form-group input,.form-group select,.form-group textarea{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;padding:7px 10px;outline:none;transition:.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.08)}
+.form-group input[readonly]{background:var(--surface2);color:var(--text3)}
+.form-group textarea{resize:vertical;min-height:64px}
+.sec-div{display:flex;align-items:center;gap:10px;margin:16px 0 12px}
+.sec-div span{font-size:11.5px;font-weight:700;color:var(--text2);white-space:nowrap}
+.sec-div::before,.sec-div::after{content:'';flex:1;height:1px;background:var(--border)}
+.itbl{border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+.itbl table th{background:var(--surface3);font-size:9.5px;padding:7px 10px}
+.itbl td{padding:5px 8px;border-bottom:1px solid var(--border)}
+.itbl tr:last-child td{border-bottom:none}
+.itbl td input,.itbl td select{background:transparent;border:1px solid transparent;outline:none;color:var(--text);font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;width:100%;padding:3px 5px;border-radius:5px;transition:.1s}
+.itbl td input:focus,.itbl td select:focus{background:var(--accent-light);border-color:var(--accent)}
+.add-row-btn{display:flex;align-items:center;gap:6px;padding:8px 12px;background:transparent;border:none;color:var(--accent);font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;font-weight:600;width:100%;border-top:1px solid var(--border);transition:.1s}
+.add-row-btn:hover{background:var(--accent-light)}.add-row-btn svg{width:12px;height:12px}
+.del-row{background:none;border:none;cursor:pointer;color:var(--text3);padding:3px;border-radius:4px;display:flex;align-items:center;justify-content:center;transition:.1s}
+.del-row:hover{color:var(--red);background:var(--red-light)}.del-row svg{width:12px;height:12px}
+.itbl tr:hover td{background:#f8faff}
+.totals-box{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:13px 17px;min-width:300px}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:12.5px;color:var(--text2)}
+.total-row.sep{border-top:1px solid var(--border);margin-top:5px;padding-top:7px}
+.total-row.grand{border-top:2px solid var(--border2);margin-top:4px;padding-top:9px;font-weight:800;color:var(--text);font-size:15px}
+.total-row .lbl{font-size:11.5px}.total-row .val{font-family:'JetBrains Mono',monospace;font-weight:600}
+.total-row.grand .val{color:var(--accent);font-size:15px}
+.gst-type-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;flex-wrap:wrap}
+.gst-type-bar label{font-size:11px;font-weight:700;color:var(--text2);font-family:'JetBrains Mono',monospace;margin-right:4px;letter-spacing:.5px}
+.gst-toggle{display:flex;border-radius:7px;overflow:hidden;border:1.5px solid var(--border2)}
+.gst-toggle button{padding:6px 16px;font-size:12px;font-weight:600;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:.15s;background:var(--surface);color:var(--text3)}
+.gst-toggle button.active-cgst{background:var(--accent-light);color:var(--accent)}
+.gst-toggle button.active-igst{background:var(--amber-light);color:var(--amber)}
+.gst-toggle button:not(:last-child){border-right:1.5px solid var(--border2)}
+.igst-badge{display:inline-flex;align-items:center;background:var(--amber-light);color:var(--amber);border:1px solid #fde68a;border-radius:6px;padding:2px 8px;font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.cgst-badge{display:inline-flex;align-items:center;background:var(--accent-light);color:var(--accent);border:1px solid #bfdbfe;border-radius:6px;padding:2px 8px;font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(5px);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:18px;width:100%;max-width:960px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);z-index:10;border-radius:18px 18px 0 0}
+.modal-title{font-size:15px;font-weight:700;color:var(--text)}
+.mhr{display:flex;gap:7px;align-items:center}
+.modal-close{background:var(--surface2);border:1px solid var(--border);color:var(--text2);cursor:pointer;padding:5px;border-radius:7px;display:flex;align-items:center;transition:.1s}
+.modal-close:hover{background:var(--red-light);color:var(--red);border-color:#fecaca}
+.modal-body{padding:20px}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:8px;background:var(--surface2);border-radius:0 0 18px 18px}
+.loading-overlay{position:fixed;inset:0;background:rgba(15,23,42,.35);backdrop-filter:blur(3px);z-index:9000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.loading-overlay.show{display:flex}
+.spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+.loading-label{color:#fff;font-size:13px;font-weight:600}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media print{#sidebar,.topbar,.no-print{display:none!important}#main{margin-left:0!important}body{background:#fff!important}#modal-print{position:static!important;display:block!important;background:none!important;padding:0!important}#modal-print .modal{border:none!important;box-shadow:none!important;max-height:none!important;width:100%!important;border-radius:0!important}#modal-print .modal-header,#modal-print .modal-footer{display:none!important}}
+.gst-pill{display:inline-flex;align-items:center;background:var(--green-light);color:var(--green);border:1px solid #bbf7d0;border-radius:5px;padding:1px 6px;font-size:10px;font-family:'JetBrains Mono',monospace;font-weight:600}
+.toast-container{position:fixed;bottom:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:7px}
+.toast{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;font-size:12.5px;box-shadow:var(--shadow-lg);animation:tIn .25s ease;min-width:220px}
+.toast.success{border-left:3px solid var(--green)}.toast.error{border-left:3px solid var(--red)}.toast.info{border-left:3px solid var(--accent)}
+@keyframes tIn{from{transform:translateX(24px);opacity:0}to{transform:translateX(0);opacity:1}}
+.empty-state{padding:40px;text-align:center;color:var(--text3)}
+.empty-state h3{font-size:13.5px;color:var(--text2);font-weight:600;margin-bottom:3px}
+.empty-state p{font-size:12px;color:var(--text3)}
+.master-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;padding:18px}
+.master-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:16px;transition:.2s;box-shadow:var(--shadow-sm)}
+.master-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.mc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.mc-code{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);font-weight:600}
+.mc-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
+.mc-detail{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.mc-detail svg{width:11px;height:11px;color:var(--text3);flex-shrink:0}
+.mc-actions{display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)}
+.reports-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:16px}
+.reports-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow-sm)}
+.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.chart-sub{font-size:11px;color:var(--text3);font-weight:400}
+.chart-wrap{position:relative;height:220px}
+.chart-wrap-lg{position:relative;height:280px}
+.chart-wrap-sm{position:relative;height:160px}
+.ledger-row-dr{background:#fff7f7}
+.ledger-row-cr{background:#f7fff9}
+.report-filter-bar{display:flex;align-items:center;gap:10px;padding:12px 18px;background:var(--surface2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.report-filter-bar label{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--text2);letter-spacing:.5px}
+.report-filter-bar input,.report-filter-bar select{font-size:12px;padding:5px 9px;border:1.5px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text);outline:none;font-family:'Plus Jakarta Sans',sans-serif}
+.party-info-bar{background:var(--accent-light);border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:12px;color:var(--accent);margin-bottom:12px;display:none}
+.party-info-bar.show{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+tr.row-low td{background:#fffbeb!important}
+tr.row-out td{background:#fff5f5!important}
+.pldg-summary{display:flex;gap:20px;flex-wrap:wrap;padding:12px 18px;background:var(--green-light);border-bottom:1px solid var(--border);align-items:center}
+.pldg-stat{display:flex;flex-direction:column;gap:2px}
+.pldg-stat-label{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);letter-spacing:.5px}
+.pldg-stat-val{font-size:16px;font-weight:800;color:var(--text)}
+.table-wrap{overflow-x:auto}
+
+/* ── CONSOLIDATED REPORT STYLES ── */
+.cons-section{margin-bottom:24px}
+.cons-section-title{font-size:12px;font-weight:700;color:var(--text2);font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;padding:10px 18px;background:var(--surface3);border-bottom:1px solid var(--border);border-top:1px solid var(--border)}
+.kpi-ribbon{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.kpi-cell{background:var(--surface);padding:14px 16px}
+.kpi-cell-label{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--text3);letter-spacing:.5px;margin-bottom:4px}
+.kpi-cell-val{font-size:20px;font-weight:800;color:var(--text);line-height:1}
+.kpi-cell-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.kpi-cell.accent .kpi-cell-val{color:var(--accent)}
+.kpi-cell.green .kpi-cell-val{color:var(--green)}
+.kpi-cell.amber .kpi-cell-val{color:var(--amber)}
+.kpi-cell.red .kpi-cell-val{color:var(--red)}
+.kpi-cell.purple .kpi-cell-val{color:var(--purple)}
+.kpi-cell.teal .kpi-cell-val{color:var(--teal)}
+
+/* Progress bar */
+.progress-bar-wrap{background:var(--surface3);border-radius:4px;height:6px;overflow:hidden;margin-top:6px}
+.progress-bar-fill{height:100%;border-radius:4px;transition:.4s}
+.progress-bar-fill.blue{background:var(--accent)}
+.progress-bar-fill.green{background:var(--green)}
+.progress-bar-fill.amber{background:var(--amber)}
+.progress-bar-fill.red{background:var(--red)}
+.progress-bar-fill.purple{background:var(--purple)}
+
+/* Alert ribbon */
+.alert-ribbon{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;font-size:12.5px;font-weight:600;margin-bottom:10px}
+.alert-ribbon.warning{background:var(--amber-light);color:var(--amber);border:1px solid #fde68a}
+.alert-ribbon.danger{background:var(--red-light);color:var(--red);border:1px solid #fecaca}
+.alert-ribbon.info{background:var(--accent-light);color:var(--accent);border:1px solid #bfdbfe}
+.alert-ribbon svg{width:14px;height:14px;flex-shrink:0}
+
+/* Party analysis table */
+.party-rank{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace}
+.party-rank.gold{background:#fef3c7;color:#b45309}
+.party-rank.silver{background:#f1f5f9;color:#475569}
+.party-rank.bronze{background:#fdf2f8;color:#9d174d}
+
+
+/* Trend indicator */
+.trend-up{color:var(--green);font-size:11px;font-weight:700}
+.trend-down{color:var(--red);font-size:11px;font-weight:700}
+.trend-flat{color:var(--text3);font-size:11px;font-weight:700}
+
+/* Report tabs */
+.report-tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;overflow-x:auto}
+.report-tab{padding:10px 20px;font-size:12.5px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--text3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif}
+.report-tab:hover{color:var(--text2)}
+.report-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.report-panel{display:none}.report-panel.active{display:block}
+</style>
+</head>
+<body>
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div><div class="loading-label" id="loading-label">Loading...</div></div>
+<div id="sidebar">
+  <div class="logo">
+    <img src="https://pristinepearl.com/wp-content/uploads/2020/11/Pristine-Pearl-Pharma-Logo-1.svg" class="logo-img" alt="Pristine Pearl" onerror="this.style.display='none'">
+    <div><div class="logo-mark">Pristine<span>Pearl</span></div><div class="logo-sub">PHARMA PVT LTD</div></div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">OVERVIEW</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+    <div class="nav-item" onclick="showPage('inventory',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Inventory</div>
+    <div class="nav-section">TRANSACTIONS</div>
+    <div class="nav-item" onclick="showPage('receipts',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Receipts<span class="nav-badge" id="receipt-badge">0</span></div>
+    <div class="nav-item" onclick="showPage('supply',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>Supply / Dispatch<span class="nav-badge amb" id="supply-badge">0</span></div>
+    <div class="nav-item" onclick="showPage('po',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>Purchase Orders<span class="nav-badge grn" id="po-badge">0</span></div>
+    <div class="nav-section">ANALYTICS</div>
+    <div class="nav-item" onclick="showPage('consolidated',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>Consolidated View</div>
+    <div class="nav-item" onclick="showPage('reports',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Reports &amp; Charts</div>    <div class="nav-item" onclick="showPage('partyanalysis',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Party Analysis</div>
+    <div class="nav-item" onclick="showPage('stockalerts',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Stock Alerts<span class="nav-badge red" id="alerts-badge">0</span></div>
+    <div class="nav-item" onclick="showPage('ledger',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Party Ledger</div>
+    <div class="nav-item" onclick="showPage('prodledger',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>Product Ledger</div>
+    <div class="nav-section">ADMIN</div>
+    <div class="nav-item" onclick="showPage('masters',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Masters<span class="nav-badge cyn" id="masters-badge">0</span></div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="inv-summary">
+      <div class="inv-summary-label">TOTAL STOCK VALUE</div>
+      <div class="inv-summary-val" id="sidebar-val">&#8377;0.00</div>
+      <div class="inv-summary-sub" id="sidebar-items">0 items tracked</div>
+    </div>
+  </div>
+</div>
+
+<div id="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">Dashboard</div>
+    <div class="topbar-right no-print">
+      <button class="btn btn-ghost btn-sm" onclick="loadAll()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>Refresh</button>
+      <button class="btn btn-ghost btn-sm" onclick="openNewPO()">+ New PO</button>
+      <button class="btn btn-amber btn-sm" onclick="openNewSupply()">+ New Supply</button>
+      <button class="btn btn-primary btn-sm" onclick="openNewReceipt()">+ New Receipt</button>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-stripe blue"></div><div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div><div class="stat-label">TOTAL SKUs</div><div class="stat-val" id="d-items">0</div><div class="stat-sub">Inventory items</div></div>
+        <div class="stat-card"><div class="stat-stripe green"></div><div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div><div class="stat-label">RECEIPTS</div><div class="stat-val" id="d-receipts">0</div><div class="stat-sub">Total received</div></div>
+        <div class="stat-card"><div class="stat-stripe amber"></div><div class="stat-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div><div class="stat-label">SUPPLY ORDERS</div><div class="stat-val" id="d-supply">0</div><div class="stat-sub">Dispatched</div></div>
+        <div class="stat-card"><div class="stat-stripe purple"></div><div class="stat-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg></div><div class="stat-label">OPEN POs</div><div class="stat-val" id="d-po">0</div><div class="stat-sub">Pending orders</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="chart-card"><div class="chart-title">Monthly Supply vs Receipt <span class="chart-sub">Last 6 months</span></div><div class="chart-wrap"><canvas id="chart-monthly"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Stock Value by Type <span class="chart-sub">Distribution</span></div><div class="chart-wrap"><canvas id="chart-pie"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Inventory Overview</div><div class="card-actions"><label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer"><input type="checkbox" id="dash-show-zero" onchange="renderDashboard()" style="width:14px;height:14px;cursor:pointer">Show zero stock</label><button class="btn btn-ghost btn-sm" onclick="showPage('inventory',document.querySelectorAll('.nav-item')[1])">View All &rarr;</button></div></div>
+        <table><thead><tr><th>TYPE</th><th>CODE</th><th>ITEM</th><th>MFR</th><th>STOCK</th><th>RATE (&#8377;)</th><th>STOCK VALUE</th><th>STATUS</th></tr></thead>
+        <tbody id="dash-inv-table"></tbody></table>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="page" id="page-inventory">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Inventory Master</div><div class="card-actions"><div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="inv-search" placeholder="Search items..." oninput="filterInventory(this.value)"></div><label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer"><input type="checkbox" id="inv-show-zero" onchange="filterInventory(document.getElementById('inv-search').value)" style="width:14px;height:14px;cursor:pointer">Show zero stock</label><button class="btn btn-primary btn-sm" onclick="openAddItemModal()">+ Add Item</button></div></div>
+        <table><thead><tr><th>TYPE</th><th>CODE</th><th>ITEM</th><th>MFR</th><th>STOCK QTY</th><th>UNIT</th><th>RATE (&#8377;)</th><th>GST %</th><th>STOCK VALUE</th><th>STATUS</th><th>ACTION</th></tr></thead>
+        <tbody id="inventory-table"></tbody></table>
+      </div>
+    </div>
+
+    <!-- RECEIPTS -->
+    <div class="page" id="page-receipts">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Goods Receipt Notes (GRN)</div><button class="btn btn-primary btn-sm" onclick="openNewReceipt()">+ New Receipt</button></div>
+        <table><thead><tr><th>GRN NO.</th><th>DATE</th><th>SUPPLIER</th><th>ITEMS</th><th>TAXABLE</th><th>GST TYPE</th><th>GST AMT</th><th>TOTAL</th><th>ACTIONS</th></tr></thead>
+        <tbody id="receipts-table"></tbody></table>
+      </div>
+    </div>
+
+    <!-- SUPPLY -->
+    <div class="page" id="page-supply">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Supply / Dispatch Orders</div><button class="btn btn-amber btn-sm" onclick="openNewSupply()">+ New Supply</button></div>
+        <table><thead><tr><th>DO NO.</th><th>DATE</th><th>CUSTOMER</th><th>ITEMS</th><th>TAXABLE</th><th>GST TYPE</th><th>GST AMT</th><th>TOTAL</th><th>ACTIONS</th></tr></thead>
+        <tbody id="supply-table"></tbody></table>
+      </div>
+    </div>
+
+    <!-- PO -->
+    <div class="page" id="page-po">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Purchase Orders</div><button class="btn btn-green btn-sm" onclick="openNewPO()">+ New PO</button></div>
+        <table><thead><tr><th>PO NO.</th><th>DATE</th><th>SUPPLIER</th><th>ITEMS</th><th>TAXABLE</th><th>GST TYPE</th><th>GST AMT</th><th>TOTAL</th><th>DELIVERY</th><th>STATUS</th><th>ACTIONS</th></tr></thead>
+        <tbody id="po-table"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         CONSOLIDATED VIEW
+    ══════════════════════════════════════ -->
+    <div class="page" id="page-consolidated">
+      <div class="report-filter-bar no-print">
+        <label>FROM</label><input type="date" id="cons-from">
+        <label>TO</label><input type="date" id="cons-to">
+        <button class="btn btn-primary btn-sm" onclick="runConsolidated()">&#9654; Generate</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportConsolidatedCSV()">&#10515; CSV</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.print()">&#128438; Print</button>
+      </div>
+
+      <!-- KPI Ribbon -->
+      <div style="padding:18px 0 0" id="cons-kpi"></div>
+
+      <!-- Charts Row -->
+      <div class="reports-grid" style="margin-top:0" id="cons-charts-row">
+        <div class="chart-card"><div class="chart-title">Monthly Revenue Trend <span class="chart-sub">Supply vs Receipt</span></div><div class="chart-wrap-lg"><canvas id="cons-chart-trend"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Transaction Volume by Month</div><div class="chart-wrap-lg"><canvas id="cons-chart-vol"></canvas></div></div>
+      </div>
+
+      <!-- Summary Table -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="cons-section-title">MONTHLY SUMMARY — RECEIPT vs SUPPLY vs PO</div>
+        <div class="table-wrap">
+          <table id="cons-monthly-table">
+            <thead><tr><th>MONTH</th><th style="text-align:right">RECEIPT (&#8377;)</th><th style="text-align:right">RECEIPT QTY</th><th style="text-align:right">SUPPLY (&#8377;)</th><th style="text-align:right">SUPPLY QTY</th><th style="text-align:right">PO (&#8377;)</th><th style="text-align:right">NET FLOW (&#8377;)</th><th style="text-align:right">GST PAID</th><th style="text-align:right">GST COLLECTED</th></tr></thead>
+            <tbody id="cons-monthly-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Category Breakdown -->
+      <div class="reports-grid">
+        <div class="chart-card"><div class="chart-title">Stock Value by Category</div><div class="chart-wrap"><canvas id="cons-chart-cat"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Top 10 Items by Transaction Count</div><div class="chart-wrap"><canvas id="cons-chart-items"></canvas></div></div>
+      </div>
+
+      <!-- Item-level consolidated table -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">Item-wise Consolidated Summary</div><div class="card-actions"><button class="btn btn-ghost btn-sm" onclick="exportItemConsolidatedCSV()">&#10515; CSV</button></div></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>CODE</th><th>ITEM</th><th>TYPE</th><th style="text-align:right">TOTAL IN</th><th style="text-align:right">TOTAL OUT</th><th style="text-align:right">CURRENT STOCK</th><th style="text-align:right">RECEIPT VALUE (&#8377;)</th><th style="text-align:right">SUPPLY VALUE (&#8377;)</th><th style="text-align:right">STOCK VALUE (&#8377;)</th><th>MOVEMENT</th></tr></thead>
+          <tbody id="cons-items-body"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         REPORTS & CHARTS
+    ══════════════════════════════════════ -->
+    <div class="page" id="page-reports">
+      <div class="report-filter-bar no-print">
+        <label>FROM</label><input type="date" id="rpt-from">
+        <label>TO</label><input type="date" id="rpt-to">
+        <label>TYPE</label>
+        <select id="rpt-type">
+          <option value="all">All Transactions</option>
+          <option value="receipts">Receipts Only</option>
+          <option value="supply">Supply Only</option>
+          <option value="po">PO Only</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="runReport()">Run Report</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.print()">&#128438; Print</button>
+      </div>
+      <div class="reports-grid">
+        <div class="chart-card"><div class="chart-title">Receipt Value by Month</div><div class="chart-wrap"><canvas id="rpt-chart-receipt"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Supply Value by Month</div><div class="chart-wrap"><canvas id="rpt-chart-supply"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Top 10 Items by Stock Value</div><div class="chart-wrap"><canvas id="rpt-chart-topitems"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">GST Summary (CGST/SGST/IGST)</div><div class="chart-wrap"><canvas id="rpt-chart-gst"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title" id="rpt-table-title">Transaction Report</div><div class="card-actions"><button class="btn btn-ghost btn-sm" onclick="exportReportCSV()">&#10515; CSV</button></div></div>
+        <table><thead><tr><th>DOC NO.</th><th>DATE</th><th>TYPE</th><th>PARTY</th><th>ITEMS</th><th>TAXABLE</th><th>GST</th><th>TOTAL</th></tr></thead>
+        <tbody id="rpt-table"></tbody></table>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px" id="rpt-summary-cards"></div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         GST RETURNS REPORT
+    ══════════════════════════════════════ -->
+    
+
+    <!-- ══════════════════════════════════════
+         PARTY ANALYSIS
+    ══════════════════════════════════════ -->
+    <div class="page" id="page-partyanalysis">
+      <div class="report-filter-bar no-print">
+        <label>FROM</label><input type="date" id="pa-from">
+        <label>TO</label><input type="date" id="pa-to">
+        <label>VIEW</label>
+        <select id="pa-view">
+          <option value="all">All Parties</option>
+          <option value="supplier">Suppliers Only</option>
+          <option value="customer">Customers Only</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="runPartyAnalysis()">Analyse</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportPartyCSV()">&#10515; CSV</button>
+      </div>
+
+      <div style="padding:18px 0 0" id="pa-kpi"></div>
+
+      <div class="reports-grid" style="margin-top:0">
+        <div class="chart-card"><div class="chart-title">Top Suppliers by Purchase Value</div><div class="chart-wrap"><canvas id="pa-chart-suppliers"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Top Customers by Sales Value</div><div class="chart-wrap"><canvas id="pa-chart-customers"></canvas></div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">Supplier Performance</div></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>#</th><th>SUPPLIER</th><th>GSTIN</th><th style="text-align:right">TOTAL GRNs</th><th style="text-align:right">TOTAL RECEIPTS (&#8377;)</th><th style="text-align:right">GST PAID (&#8377;)</th><th style="text-align:right">OPEN POs</th><th style="text-align:right">PO VALUE (&#8377;)</th><th>LAST TXN</th></tr></thead>
+          <tbody id="pa-supplier-body"></tbody></table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Customer Performance</div></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>#</th><th>CUSTOMER</th><th>GSTIN</th><th style="text-align:right">TOTAL DOs</th><th style="text-align:right">TOTAL SALES (&#8377;)</th><th style="text-align:right">GST COLLECTED (&#8377;)</th><th style="text-align:right">AVG ORDER (&#8377;)</th><th>LAST TXN</th></tr></thead>
+          <tbody id="pa-customer-body"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         STOCK ALERTS
+    ══════════════════════════════════════ -->
+    <div class="page" id="page-stockalerts">
+      <div style="padding:18px 0 4px" id="alerts-kpi"></div>
+
+      <!-- Tabs -->
+      <div class="report-tabs no-print" id="alert-tabs">
+        <button class="report-tab active" onclick="setAlertTab('out',this)">Out of Stock</button>
+        <button class="report-tab" onclick="setAlertTab('low',this)">Low Stock</button>
+        <button class="report-tab" onclick="setAlertTab('reorder',this)">Reorder Needed</button>
+        <button class="report-tab" onclick="setAlertTab('all',this)">All Items</button>
+      </div>
+
+      <div id="alert-panel-out" class="report-panel active">
+        <div class="card"><div class="card-header"><div class="card-title" style="color:var(--red)">&#9888; Out of Stock Items</div><button class="btn btn-ghost btn-sm" onclick="exportAlertsCSV('out')">&#10515; CSV</button></div>
+        <table><thead><tr><th>CODE</th><th>ITEM</th><th>TYPE</th><th>MFR</th><th style="text-align:right">CURRENT STOCK</th><th style="text-align:right">REORDER LEVEL</th><th style="text-align:right">UNIT RATE</th><th>ACTION</th></tr></thead>
+        <tbody id="alert-out-body"></tbody></table></div>
+      </div>
+
+      <div id="alert-panel-low" class="report-panel">
+        <div class="card"><div class="card-header"><div class="card-title" style="color:var(--amber)">&#9888; Low Stock Items</div><button class="btn btn-ghost btn-sm" onclick="exportAlertsCSV('low')">&#10515; CSV</button></div>
+        <table><thead><tr><th>CODE</th><th>ITEM</th><th>TYPE</th><th>MFR</th><th style="text-align:right">CURRENT STOCK</th><th style="text-align:right">REORDER LEVEL</th><th style="text-align:right">SHORTAGE</th><th style="text-align:right">EST. REORDER VALUE</th><th>ACTION</th></tr></thead>
+        <tbody id="alert-low-body"></tbody></table></div>
+      </div>
+
+      <div id="alert-panel-reorder" class="report-panel">
+        <div class="card"><div class="card-header"><div class="card-title" style="color:var(--purple)">&#128240; Reorder Suggestions</div><button class="btn btn-ghost btn-sm" onclick="exportAlertsCSV('reorder')">&#10515; CSV</button></div>
+        <div style="padding:10px 18px;background:var(--purple-light);border-bottom:1px solid var(--border);font-size:12px;color:var(--purple)">Suggested reorder quantities based on last receipt quantity and current stock levels.</div>
+        <table><thead><tr><th>CODE</th><th>ITEM</th><th>LAST SUPPLIER</th><th style="text-align:right">CURRENT STOCK</th><th style="text-align:right">REORDER LEVEL</th><th style="text-align:right">LAST RECEIPT QTY</th><th style="text-align:right">SUGGESTED QTY</th><th style="text-align:right">EST. VALUE (&#8377;)</th><th>ACTION</th></tr></thead>
+        <tbody id="alert-reorder-body"></tbody></table></div>
+      </div>
+
+      <div id="alert-panel-all" class="report-panel">
+        <div class="card"><div class="card-header"><div class="card-title">All Items — Stock Status</div><div class="card-actions"><div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="alert-all-search" placeholder="Search..." oninput="filterAlertAll(this.value)"></div></div></div>
+        <table><thead><tr><th>CODE</th><th>ITEM</th><th>TYPE</th><th style="text-align:right">STOCK</th><th style="text-align:right">REORDER LEVEL</th><th style="text-align:right">COVERAGE %</th><th>STATUS</th><th style="text-align:right">STOCK VALUE</th></tr></thead>
+        <tbody id="alert-all-body"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- LEDGER -->
+    <div class="page" id="page-ledger">
+      <div class="report-filter-bar no-print">
+        <label>PARTY / LEDGER</label>
+        <select id="ldg-party" onchange="runLedger()" style="min-width:200px">
+          <option value="">-- Select Party --</option>
+          <optgroup label="SUPPLIERS" id="ldg-suppliers"></optgroup>
+          <optgroup label="CUSTOMERS" id="ldg-customers"></optgroup>
+        </select>
+        <label>FROM</label><input type="date" id="ldg-from">
+        <label>TO</label><input type="date" id="ldg-to">
+        <button class="btn btn-primary btn-sm" onclick="runLedger()">View Ledger</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.print()">&#128438; Print</button>
+      </div>
+      <div id="ldg-summary-bar" style="display:none;padding:12px 18px;background:var(--accent-light);border-bottom:1px solid var(--border)"></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title" id="ldg-title">Party Ledger</div></div>
+        <table><thead><tr><th>DATE</th><th>DOC NO.</th><th>TYPE</th><th>DESCRIPTION</th><th style="text-align:right">DEBIT (&#8377;)</th><th style="text-align:right">CREDIT (&#8377;)</th><th style="text-align:right">BALANCE (&#8377;)</th></tr></thead>
+        <tbody id="ldg-table"></tbody></table>
+      </div>
+    </div>
+
+    <!-- PRODUCT LEDGER -->
+    <div class="page" id="page-prodledger">
+      <div class="report-filter-bar no-print">
+        <label>ITEM / SKU</label>
+        <select id="pldg-item" style="min-width:240px"><option value="">-- Select Item --</option></select>
+        <label>FROM</label><input type="date" id="pldg-from">
+        <label>TO</label><input type="date" id="pldg-to">
+        <button class="btn btn-primary btn-sm" onclick="runProductLedger()">View Ledger</button>
+        <button class="btn btn-ghost btn-sm" onclick="exportProdLedgerCSV()">&#10515; CSV</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.print()">&#128438; Print</button>
+      </div>
+      <div id="pldg-summary-bar" class="pldg-summary" style="display:none"></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title" id="pldg-title">Product Ledger</div></div>
+        <div class="table-wrap">
+          <table><thead><tr><th>DATE</th><th>DOC NO.</th><th>TYPE</th><th>PARTY</th><th style="text-align:right">IN (QTY)</th><th style="text-align:right">OUT (QTY)</th><th style="text-align:right">BALANCE QTY</th><th style="text-align:right">RATE (&#8377;)</th><th style="text-align:right">VALUE (&#8377;)</th></tr></thead>
+          <tbody id="pldg-table"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MASTERS -->
+    <div class="page" id="page-masters">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Masters — MFR / Supplier / Customer</div>
+          <div class="card-actions">
+            <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="master-search" placeholder="Search..." oninput="renderMasters()"></div>
+            <button class="btn btn-purple btn-sm" onclick="openMasterModal('MFR')">+ Add MFR</button>
+            <button class="btn btn-green btn-sm" onclick="openMasterModal('SUPPLIER')">+ Add Supplier</button>
+            <button class="btn btn-amber btn-sm" onclick="openMasterModal('CUSTOMER')">+ Add Customer</button>
+          </div>
+        </div>
+        <div style="padding:14px 18px 4px">
+          <div class="type-tabs">
+            <div class="type-tab active" id="mtab-ALL" onclick="setMasterTab('ALL')">All</div>
+            <div class="type-tab mfr" id="mtab-MFR" onclick="setMasterTab('MFR')">Manufacturers</div>
+            <div class="type-tab sup" id="mtab-SUPPLIER" onclick="setMasterTab('SUPPLIER')">Suppliers</div>
+            <div class="type-tab cust" id="mtab-CUSTOMER" onclick="setMasterTab('CUSTOMER')">Customers</div>
+          </div>
+        </div>
+        <div id="masters-grid" class="master-grid"></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- MODALS (unchanged from original) -->
+<div class="modal-overlay" id="modal-add-item"><div class="modal" style="max-width:560px"><div class="modal-header"><div class="modal-title">Add Inventory Item</div><button class="modal-close" onclick="closeModal('modal-add-item')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-body"><div class="form-grid"><div class="form-row"><div class="form-group"><label>ITEM CODE *</label><input type="text" id="item-code" placeholder="C/KID001"></div><div class="form-group"><label>ITEM NAME *</label><input type="text" id="item-name" placeholder="Item description"></div></div><div class="form-row"><div class="form-group"><label>TYPE / CATEGORY</label><input type="text" id="item-category" placeholder="e.g. Carton, Label"></div><div class="form-group"><label>MANUFACTURER</label><select id="item-mfr-sel" onchange="document.getElementById('item-mfr').value=this.options[this.selectedIndex].text==='-- Select MFR --'?'':this.options[this.selectedIndex].text"><option value="">-- Select MFR --</option></select><input type="text" id="item-mfr" placeholder="Or type manually" style="margin-top:4px"></div></div><div class="form-row"><div class="form-group"><label>UNIT</label><select id="item-unit"><option>PCS</option><option>BOX</option><option>KG</option><option>NOS</option><option>SET</option></select></div><div class="form-group"><label>UNIT PRICE (&#8377;) *</label><input type="number" id="item-price" placeholder="0.00" min="0" step="0.01"></div></div><div class="form-row"><div class="form-group"><label>GST RATE</label><select id="item-gst"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></div><div class="form-group"><label>OPENING STOCK</label><input type="number" id="item-opening" placeholder="0" min="0"></div></div><div class="form-row"><div class="form-group"><label>REORDER LEVEL</label><input type="number" id="item-reorder" placeholder="10" min="0"></div><div class="form-group"><label>DESCRIPTION</label><input type="text" id="item-desc" placeholder="Optional"></div></div></div></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-add-item')">Cancel</button><button class="btn btn-primary" onclick="saveItem()">Save to Database</button></div></div></div>
+
+<div class="modal-overlay" id="modal-master"><div class="modal" style="max-width:580px"><div class="modal-header"><div class="modal-title" id="master-modal-title">Add Master Record</div><button class="modal-close" onclick="closeModal('modal-master')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="modal-body"><input type="hidden" id="m-code"><input type="hidden" id="m-type"><div class="form-grid"><div class="form-row"><div class="form-group"><label>CODE</label><input type="text" id="m-code-display" readonly placeholder="Auto-generated"></div><div class="form-group"><label>TYPE</label><input type="text" id="m-type-display" readonly></div></div><div class="form-group"><label>NAME *</label><input type="text" id="m-name" placeholder="Full name"></div><div class="form-group"><label>ADDRESS</label><textarea id="m-address" placeholder="Full address" style="min-height:56px"></textarea></div><div class="form-row"><div class="form-group"><label>PHONE</label><input type="text" id="m-phone" placeholder="+91 98765 43210"></div><div class="form-group"><label>CONTACT PERSON</label><input type="text" id="m-contact" placeholder="Contact name"></div></div><div class="form-row"><div class="form-group"><label>EMAIL</label><input type="email" id="m-email" placeholder="email@example.com"></div><div class="form-group"><label>GST NO.</label><input type="text" id="m-gst" placeholder="22AAAAA0000A1Z5"></div></div></div></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-master')">Cancel</button><button class="btn btn-primary" id="save-master-btn" onclick="saveMaster()">Save to Database</button></div></div></div>
+
+<div class="modal-overlay" id="modal-receipt"><div class="modal"><div class="modal-header"><div class="modal-title">New Goods Receipt Note (GRN)</div><div class="mhr"><button class="btn btn-ghost btn-sm no-print" onclick="printCurrentDoc('receipt')">Preview</button><button class="modal-close" onclick="closeModal('modal-receipt')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="modal-body"><div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>GRN NO.</label><input type="text" id="r-no" readonly></div><div class="form-group"><label>DATE *</label><input type="date" id="r-date"></div><div class="form-group"><label>SUPPLIER *</label><select id="r-supplier-sel" onchange="fillPartyFromSel('r-supplier','r-sup-gst',this,'SUPPLIER')"><option value="">-- Select Supplier --</option></select><input type="text" id="r-supplier" placeholder="Or type manually" style="margin-top:4px"></div><div class="form-group"><label>INVOICE NO.</label><input type="text" id="r-invoice" placeholder="Invoice no."></div></div><div id="r-party-bar" class="party-info-bar"></div><div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>SUPPLIER GSTIN</label><input type="text" id="r-sup-gst" placeholder="GSTIN"></div><div class="form-group"><label>AGAINST PO</label><select id="r-ref-po"><option value="">-- None --</option></select></div></div><div class="gst-type-bar"><label>GST TYPE</label><div class="gst-toggle"><button id="r-cgst-btn" class="active-cgst" onclick="setGSTType('receipt','CGST_SGST')">CGST + SGST</button><button id="r-igst-btn" onclick="setGSTType('receipt','IGST')">IGST</button></div><div id="r-gst-badge" class="cgst-badge" style="margin-left:auto">CGST + SGST</div></div><div class="sec-div"><span>ITEMS RECEIVED</span></div><div class="itbl" style="margin-bottom:14px"><table><thead><tr><th>ITEM</th><th>QTY</th><th>UNIT</th><th>RATE (&#8377;)</th><th>GST%</th><th>TAXABLE</th><th>GST AMT</th><th>TOTAL</th><th></th></tr></thead><tbody id="receipt-items"></tbody></table><button class="add-row-btn no-print" onclick="addReceiptRow()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Item Row</button></div><div style="display:flex;justify-content:flex-end;margin-bottom:12px"><div class="totals-box"><div class="total-row"><span class="lbl">Subtotal</span><span class="val" id="r-subtotal">&#8377;0.00</span></div><div class="total-row sep" id="r-row-cgst"><span class="lbl">CGST</span><span class="val" id="r-cgst">&#8377;0.00</span></div><div class="total-row" id="r-row-sgst"><span class="lbl">SGST</span><span class="val" id="r-sgst">&#8377;0.00</span></div><div class="total-row sep" id="r-row-igst" style="display:none"><span class="lbl" style="color:var(--amber)">IGST</span><span class="val" id="r-igst" style="color:var(--amber)">&#8377;0.00</span></div><div class="total-row grand"><span>GRAND TOTAL</span><span class="val" id="r-total">&#8377;0.00</span></div></div></div><div class="form-group"><label>NOTES</label><textarea id="r-notes" placeholder="Additional notes..."></textarea></div></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-receipt')">Cancel</button><button class="btn btn-primary" id="save-receipt-btn" onclick="saveReceipt()">Save &amp; Update Stock</button></div></div></div>
+
+<div class="modal-overlay" id="modal-supply"><div class="modal"><div class="modal-header"><div class="modal-title">New Supply / Dispatch Order</div><div class="mhr"><button class="btn btn-ghost btn-sm no-print" onclick="printCurrentDoc('supply')">Preview</button><button class="modal-close" onclick="closeModal('modal-supply')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="modal-body"><div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>DO NUMBER</label><input type="text" id="s-no" readonly></div><div class="form-group"><label>DATE *</label><input type="date" id="s-date"></div><div class="form-group"><label>CUSTOMER *</label><select id="s-customer-sel" onchange="fillPartyFromSel('s-customer','s-cust-gst',this,'CUSTOMER')"><option value="">-- Select Customer --</option></select><input type="text" id="s-customer" placeholder="Or type manually" style="margin-top:4px"></div><div class="form-group"><label>CUSTOMER GSTIN</label><input type="text" id="s-cust-gst" placeholder="GSTIN"></div></div><div id="s-party-bar" class="party-info-bar"></div><div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>DELIVERY ADDRESS</label><input type="text" id="s-address" placeholder="Address"></div><div class="form-group"><label>CUSTOMER PO NO.</label><input type="text" id="s-cust-po" placeholder="Ref PO"></div></div><div class="gst-type-bar"><label>GST TYPE</label><div class="gst-toggle"><button id="s-cgst-btn" class="active-cgst" onclick="setGSTType('supply','CGST_SGST')">CGST + SGST</button><button id="s-igst-btn" onclick="setGSTType('supply','IGST')">IGST</button></div><div id="s-gst-badge" class="cgst-badge" style="margin-left:auto">CGST + SGST</div></div><div class="sec-div"><span>ITEMS TO DISPATCH</span></div><div class="itbl" style="margin-bottom:14px"><table><thead><tr><th>ITEM</th><th>AVAIL</th><th>QTY</th><th>UNIT</th><th>RATE (&#8377;)</th><th>GST%</th><th>TAXABLE</th><th>GST AMT</th><th>TOTAL</th><th></th></tr></thead><tbody id="supply-items"></tbody></table><button class="add-row-btn no-print" onclick="addSupplyRow()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Item Row</button></div><div style="display:flex;justify-content:flex-end"><div class="totals-box"><div class="total-row"><span class="lbl">Subtotal</span><span class="val" id="s-subtotal">&#8377;0.00</span></div><div class="total-row sep" id="s-row-cgst"><span class="lbl">CGST</span><span class="val" id="s-cgst">&#8377;0.00</span></div><div class="total-row" id="s-row-sgst"><span class="lbl">SGST</span><span class="val" id="s-sgst">&#8377;0.00</span></div><div class="total-row sep" id="s-row-igst" style="display:none"><span class="lbl" style="color:var(--amber)">IGST</span><span class="val" id="s-igst" style="color:var(--amber)">&#8377;0.00</span></div><div class="total-row grand"><span>GRAND TOTAL</span><span class="val" id="s-total">&#8377;0.00</span></div></div></div></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-supply')">Cancel</button><button class="btn btn-amber" id="save-supply-btn" onclick="saveSupply()">Save &amp; Dispatch</button></div></div></div>
+
+<div class="modal-overlay" id="modal-po"><div class="modal"><div class="modal-header"><div class="modal-title">New Purchase Order</div><div class="mhr"><button class="btn btn-ghost btn-sm no-print" onclick="printCurrentDoc('po')">Preview</button><button class="modal-close" onclick="closeModal('modal-po')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="modal-body"><div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>PO NUMBER</label><input type="text" id="p-no" readonly></div><div class="form-group"><label>DATE *</label><input type="date" id="p-date"></div><div class="form-group"><label>SUPPLIER *</label><select id="p-supplier-sel" onchange="fillPartyFromSel('p-supplier','p-sup-gst',this,'SUPPLIER')"><option value="">-- Select Supplier --</option></select><input type="text" id="p-supplier" placeholder="Or type manually" style="margin-top:4px"></div><div class="form-group"><label>SUPPLIER GSTIN</label><input type="text" id="p-sup-gst" placeholder="GSTIN"></div></div><div id="p-party-bar" class="party-info-bar"></div><div class="form-row" style="margin-bottom:12px"><div class="form-group"><label>EXPECTED DELIVERY</label><input type="date" id="p-delivery"></div><div class="form-group"><label>PAYMENT TERMS</label><select id="p-payment"><option>None</option><option>Paid</option><option>Net 30</option><option>Net 15</option><option>Net 45</option><option>Immediate</option><option>Advance</option></select></div><div class="form-group"><label>DELIVERY ADDRESS</label><input type="text" id="p-address" placeholder="Address"></div></div><div class="gst-type-bar"><label>GST TYPE</label><div class="gst-toggle"><button id="p-cgst-btn" class="active-cgst" onclick="setGSTType('po','CGST_SGST')">CGST + SGST</button><button id="p-igst-btn" onclick="setGSTType('po','IGST')">IGST</button></div><div id="p-gst-badge" class="cgst-badge" style="margin-left:auto">CGST + SGST</div></div><div class="sec-div"><span>ORDERED ITEMS</span></div><div class="itbl" style="margin-bottom:14px"><table><thead><tr><th>ITEM</th><th>QTY</th><th>UNIT</th><th>RATE (&#8377;)</th><th>GST%</th><th>TAXABLE</th><th>GST AMT</th><th>TOTAL</th><th></th></tr></thead><tbody id="po-items"></tbody></table><button class="add-row-btn no-print" onclick="addPORow()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Item Row</button></div><div style="display:flex;justify-content:flex-end;margin-bottom:12px"><div class="totals-box"><div class="total-row"><span class="lbl">Subtotal</span><span class="val" id="p-subtotal">&#8377;0.00</span></div><div class="total-row sep" id="p-row-cgst"><span class="lbl">CGST</span><span class="val" id="p-cgst">&#8377;0.00</span></div><div class="total-row" id="p-row-sgst"><span class="lbl">SGST</span><span class="val" id="p-sgst">&#8377;0.00</span></div><div class="total-row sep" id="p-row-igst" style="display:none"><span class="lbl" style="color:var(--amber)">IGST</span><span class="val" id="p-igst" style="color:var(--amber)">&#8377;0.00</span></div><div class="total-row grand"><span>GRAND TOTAL</span><span class="val" id="p-total">&#8377;0.00</span></div></div></div><div class="form-group"><label>TERMS &amp; CONDITIONS</label><textarea id="p-terms" placeholder="Terms..."></textarea></div></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('modal-po')">Cancel</button><button class="btn btn-green" id="save-po-btn" onclick="savePO()">Issue Purchase Order</button></div></div></div>
+
+<div class="modal-overlay" id="modal-print"><div class="modal" style="max-width:800px"><div class="modal-header no-print"><div class="modal-title" id="print-modal-title">Document Preview</div><div class="mhr"><button class="btn btn-primary btn-sm" onclick="window.print()">Print</button><button class="modal-close" onclick="closeModal('modal-print')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div></div><div class="modal-body" id="print-content" style="background:#f5f5f5;padding:14px"></div></div></div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+var DB_URL = 'https://script.google.com/macros/s/AKfycbwtik_k3eR7dRIqND5rKQh5cnYokBgi1G4u9AeOYSkOqWUFrGlbzXvvxz8ljK9Gv8wVFg/exec';
+var COMPANY = {name:'Pristine Pearl Pharma PVT LTD',addr1:'Second Floor - 2B, Door No: 129, Thottasalai East',addr2:'Power House Road, Perur Village, Coimbatore - 641010',gstin:'33AAGCB2183C1Z6',dl:'TN-10-20B-00354, TN-10-21B-00354',logo:'https://pristinepearl.com/wp-content/uploads/2020/11/Pristine-Pearl-Pharma-Logo-1.svg'};
+var gstMode = {receipt:'CGST_SGST',supply:'CGST_SGST',po:'CGST_SGST'};
+var cache = {inventory:[],receipts:[],supply:[],po:[],masters:[]};
+var counters = {grn:1,do:1,po:1};
+var masterTab = 'ALL';
+var chartInstances = {};
+var alertTab = 'out';
+
+// ── API ──
+function apiGet(a){return fetch(DB_URL+'?action='+a).then(function(r){return r.json();});}
+function apiPost(d){return fetch(DB_URL,{method:'POST',body:JSON.stringify(d)}).then(function(r){return r.json();});}
+
+// ── LOAD ALL ──
+function loadAll(){
+  showLoading('Loading from database...');
+  apiGet('getAll').then(function(res){
+    hideLoading();
+    if(res.status!=='ok'){toast('Load failed: '+(res.message||'unknown'),'error');return;}
+    cache.inventory=(res.inventory||[]).map(function(row){
+      return{code:String(row['Code']||''),name:String(row['Item']||''),mfr:String(row['Mfr']||''),
+             category:String(row['Type']||''),stock:Number(row['Qty'])||0,price:Number(row['Rate'])||0,
+             value:Number(row['Value'])||0,gst:Number(row['GST %'])||0,unit:String(row['Unit']||'PCS'),
+             reorder:Number(row['Reorder'])||10,desc:String(row['Description']||'')};
+    });
+    cache.receipts=buildDocCache(res.receipts||[],'RECEIPT ID',function(g){
+      var f=g.rows[0];
+      var items=g.rows.map(function(r){var qty=Number(r['QTY'])||0;var rate=Number(r['RATE'])||0;if(!rate&&qty)rate=r2(Number(r['TAXABLE']||0)/qty);return{item:String(r['CODE']||''),name:String(r['ITEM']||''),itemType:String(r['TYPE']||''),qty:qty,unit:String(r['UNIT']||'PCS'),rate:rate,gst:Number(r['GST %'])||0};});
+      var t=calcItemsTotal(items);
+      return{no:g.id,date:fmtDateVal(f['DATE']),supplier:String(f['SUPPLIER']||''),invoice:String(f['INVOICE NO']||''),gstType:String(f['GST TYPE']||'CGST_SGST'),items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:'Received'};
+    });
+    cache.supply=buildDocCache(res.supply||[],'SUPPLY ID',function(g){
+      var f=g.rows[0];
+      var items=g.rows.map(function(r){var qty=Number(r['QTY'])||0;var rate=Number(r['RATE'])||0;if(!rate&&qty)rate=r2(Number(r['TAXABLE']||0)/qty);return{item:String(r['CODE']||''),name:String(r['ITEM']||''),itemType:String(r['TYPE']||''),qty:qty,unit:String(r['UNIT']||'PCS'),rate:rate,gst:Number(r['GST %'])||0};});
+      var t=calcItemsTotal(items);
+      return{no:g.id,date:fmtDateVal(f['DATE']),customer:String(f['PARTY NAME']||''),gstType:String(f['GST TYPE']||'CGST_SGST'),items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:'Dispatched'};
+    });
+    cache.po=buildDocCache(res.po||[],'PO ID',function(g){
+      var f=g.rows[0];
+      var items=g.rows.map(function(r){var qty=Number(r['QTY'])||0;var rate=Number(r['RATE'])||0;if(!rate&&qty)rate=r2(Number(r['TAXABLE']||0)/qty);return{item:String(r['CODE']||''),name:String(r['ITEM']||''),itemType:String(r['TYPE']||''),qty:qty,unit:String(r['UNIT']||'PCS'),rate:rate,gst:Number(r['GST %'])||0};});
+      var t=calcItemsTotal(items);
+      return{no:g.id,date:fmtDateVal(f['DATE']),supplier:String(f['PARTY NAME']||''),delivery:fmtDateVal(f['ESTIMATED DELIVERY DATE']),gstType:String(f['GST TYPE']||'CGST_SGST'),items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:String(f['STATUS']||'Open')};
+    });
+    cache.masters=(res.masters||[]).filter(function(r){
+      var nr={};Object.keys(r).forEach(function(k){nr[k.trim()]=r[k];});return nr['CODE'];
+    }).map(function(row){
+      var nr={};Object.keys(row).forEach(function(k){nr[k.trim()]=row[k];});
+      return{code:String(nr['CODE']||''),type:String(nr['TYPE']||''),name:String(nr['NAME']||''),
+             address:String(nr['ADDRESS']||''),phone:String(nr['PHONE']||''),
+             contactPerson:String(nr['CONTACT PERSON']||''),email:String(nr['EMAIL']||''),
+             gstNo:String(nr['GST NO']||'')};
+    });
+    updateCounters();refreshSidebar();renderDashboard();
+    populatePartySelects();populateLedgerParties();
+    updateAlertsBadge();
+    var ap=document.querySelector('.page.active');
+    if(ap){var pid=ap.id.replace('page-','');renderActivePage(pid);}
+    toast('Data loaded!','success');
+  }).catch(function(e){hideLoading();toast('Error: '+e.message,'error');});
+}
+
+function buildDocCache(g,k,m){return(g||[]).map(function(x){try{return m(x);}catch(e){return null;}}).filter(Boolean);}
+function updateCounters(){
+  var gn=cache.receipts.map(function(r){return parseInt(r.no.replace(/\D/g,''))||0;});
+  var dn=cache.supply.map(function(r){return parseInt(r.no.replace(/\D/g,''))||0;});
+  var pn=cache.po.map(function(r){return parseInt(r.no.replace(/\D/g,''))||0;});
+  counters.grn=gn.length?Math.max.apply(null,gn)+1:1;
+  counters.do=dn.length?Math.max.apply(null,dn)+1:1;
+  counters.po=pn.length?Math.max.apply(null,pn)+1:1;
+}
+function refreshSidebar(){
+  var tv=cache.inventory.reduce(function(s,i){return s+i.stock*i.price;},0);
+  document.getElementById('sidebar-val').textContent='\u20b9'+fmt(tv);
+  document.getElementById('sidebar-items').textContent=cache.inventory.length+' items tracked';
+  document.getElementById('receipt-badge').textContent=cache.receipts.length;
+  document.getElementById('supply-badge').textContent=cache.supply.length;
+  document.getElementById('po-badge').textContent=cache.po.filter(function(p){return p.status==='Open';}).length;
+  document.getElementById('masters-badge').textContent=cache.masters.length;
+}
+function updateAlertsBadge(){
+  var cnt=cache.inventory.filter(function(i){return i.stock<=i.reorder;}).length;
+  document.getElementById('alerts-badge').textContent=cnt;
+}
+
+// ── PARTY SELECTS ──
+function populatePartySelects(){
+  var mfrs=cache.masters.filter(function(m){return m.type==='MFR';});
+  var sups=cache.masters.filter(function(m){return m.type==='SUPPLIER';});
+  var custs=cache.masters.filter(function(m){return m.type==='CUSTOMER';});
+  function bO(arr){return arr.map(function(m){return'<option value="'+esc(m.code)+'">'+esc(m.name)+'</option>';}).join('');}
+  var ms=document.getElementById('item-mfr-sel');if(ms)ms.innerHTML='<option value="">-- Select MFR --</option>'+bO(mfrs);
+  var rs=document.getElementById('r-supplier-sel');if(rs)rs.innerHTML='<option value="">-- Select Supplier --</option>'+bO(sups);
+  var ss=document.getElementById('s-customer-sel');if(ss)ss.innerHTML='<option value="">-- Select Customer --</option>'+bO(custs);
+  var ps=document.getElementById('p-supplier-sel');if(ps)ps.innerHTML='<option value="">-- Select Supplier --</option>'+bO(sups);
+}
+function fillPartyFromSel(nameId,gstId,selEl,type){
+  var code=selEl.value;
+  var barId=nameId.split('-')[0]+'-party-bar';
+  if(!code){document.getElementById(nameId).value='';document.getElementById(gstId).value='';var bar=document.getElementById(barId);if(bar)bar.classList.remove('show');return;}
+  var m=cache.masters.find(function(x){return x.code===code;});if(!m)return;
+  document.getElementById(nameId).value=m.name;document.getElementById(gstId).value=m.gstNo||'';
+  var bar=document.getElementById(barId);
+  if(bar){bar.innerHTML='<strong>'+esc(m.name)+'</strong>'+(m.phone?' &nbsp;&#9742; '+esc(m.phone):'')+(m.contactPerson?' &nbsp;&#128100; '+esc(m.contactPerson):'');bar.classList.add('show');}
+  if(nameId==='s-customer'&&m.address)document.getElementById('s-address').value=m.address;
+  if(nameId==='p-supplier'&&m.address)document.getElementById('p-address').value=m.address;
+}
+
+// ── NAV ──
+function showPage(name,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  if(el)el.classList.add('active');
+  var titles={dashboard:'Dashboard',inventory:'Inventory',receipts:'Goods Receipts (GRN)',supply:'Supply / Dispatch',po:'Purchase Orders',masters:'Masters',reports:'Reports & Charts',ledger:'Party Ledger',prodledger:'Product Ledger',consolidated:'Consolidated View',partyanalysis:'Party Analysis',stockalerts:'Stock Alerts'};
+  document.getElementById('page-title').textContent=titles[name]||name;
+  renderActivePage(name);
+}
+function renderActivePage(pid){
+  if(pid==='inventory')renderInventory();
+  if(pid==='receipts')renderReceipts();
+  if(pid==='supply')renderSupply();
+  if(pid==='po')renderPO();
+  if(pid==='masters')renderMasters();
+  if(pid==='reports'){initReportDates();runReport();}
+  if(pid==='ledger')populateLedgerParties();
+  if(pid==='prodledger')initProductLedger();
+  if(pid==='dashboard')renderDashboardCharts();
+  if(pid==='consolidated'){initConsDates();runConsolidated();}
+  if(pid==='partyanalysis'){initPADates();runPartyAnalysis();}
+  if(pid==='stockalerts')renderStockAlerts();
+}
+
+// ── HELPERS ──
+function fmt(n){return Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmtN(n){return Number(n||0).toLocaleString('en-IN');}
+function fmtDate(d){if(!d)return'—';try{return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}catch(e){return d}}
+function fmtDateVal(v){if(!v)return'';if(v instanceof Date){var y=v.getFullYear(),m=String(v.getMonth()+1).padStart(2,'0'),d=String(v.getDate()).padStart(2,'0');return y+'-'+m+'-'+d;}var s=String(v);if(s.match(/^\d{4}-\d{2}-\d{2}$/))return s;try{var dt=new Date(s);if(!isNaN(dt.getTime())){var y2=dt.getFullYear(),m2=String(dt.getMonth()+1).padStart(2,'0'),d2=String(dt.getDate()).padStart(2,'0');return y2+'-'+m2+'-'+d2;}}catch(e){}return s;}
+function today(){return new Date().toISOString().split('T')[0];}
+function padNo(n){return String(n).padStart(4,'0');}
+function genNo(pfx,n){return pfx+padNo(n);}
+function r2(n){return Math.round((n||0)*100)/100;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(msg,type){type=type||'info';var tc=document.getElementById('toast-container');var t=document.createElement('div');t.className='toast '+type;t.innerHTML='<span style="font-weight:700;font-size:14px">'+({success:'✓',error:'✗',info:'i'}[type]||'•')+'</span><span>'+msg+'</span>';tc.appendChild(t);setTimeout(function(){t.style.cssText='opacity:0;transform:translateX(20px);transition:.3s';setTimeout(function(){t.remove();},300);},3200);}
+function showLoading(msg){document.getElementById('loading-label').textContent=msg||'Loading...';document.getElementById('loading-overlay').classList.add('show');}
+function hideLoading(){document.getElementById('loading-overlay').classList.remove('show');}
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)closeModal(o.id);});});
+function trendIcon(pct){if(pct>0)return'<span class="trend-up">▲ '+pct.toFixed(1)+'%</span>';if(pct<0)return'<span class="trend-down">▼ '+Math.abs(pct).toFixed(1)+'%</span>';return'<span class="trend-flat">— 0%</span>';}
+function calcGrowth(a,b){if(!b)return a>0?100:0;return r2((a-b)/b*100);}
+function csvDown(data,filename){var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(data);a.download=filename;a.click();}
+
+// ── GST TOGGLE ──
+function setGSTType(type,mode){
+  gstMode[type]=mode;
+  var pfx={receipt:'r',supply:'s',po:'p'}[type];
+  var cb=document.getElementById(pfx+'-cgst-btn'),ib=document.getElementById(pfx+'-igst-btn'),badge=document.getElementById(pfx+'-gst-badge');
+  if(mode==='CGST_SGST'){cb.className='active-cgst';ib.className='';badge.className='cgst-badge';badge.textContent='CGST + SGST';document.getElementById(pfx+'-row-cgst').style.display='';document.getElementById(pfx+'-row-sgst').style.display='';document.getElementById(pfx+'-row-igst').style.display='none';}
+  else{cb.className='';ib.className='active-igst';badge.className='igst-badge';badge.textContent='IGST';document.getElementById(pfx+'-row-cgst').style.display='none';document.getElementById(pfx+'-row-sgst').style.display='none';document.getElementById(pfx+'-row-igst').style.display='';}
+  calcTotals(type);
+}
+function buildOpts(){return cache.inventory.map(function(i){return'<option value="'+i.code+'" data-price="'+i.price+'" data-gst="'+i.gst+'" data-unit="'+i.unit+'" data-stock="'+i.stock+'" data-type="'+i.category+'">'+i.name+' ('+i.code+')</option>';}).join('');}
+function applyDefaults(sel,row){var opt=sel.options[sel.selectedIndex];if(!opt)return;if(opt.dataset.price)row.querySelector('.rate').value=opt.dataset.price;if(opt.dataset.gst)row.querySelector('.gst-sel').value=String(opt.dataset.gst);if(opt.dataset.unit)row.querySelector('.unit').value=opt.dataset.unit;}
+function calcTotals(type){
+  var tId={receipt:'receipt-items',supply:'supply-items',po:'po-items'}[type];
+  var pfx={receipt:'r',supply:'s',po:'p'}[type];
+  var mode=gstMode[type];var totalSub=0,totalGST=0;
+  document.querySelectorAll('#'+tId+' tr').forEach(function(row){
+    var qty=parseFloat(row.querySelector('.qty')&&row.querySelector('.qty').value)||0;
+    var rate=parseFloat(row.querySelector('.rate')&&row.querySelector('.rate').value)||0;
+    var gPct=parseFloat(row.querySelector('.gst-sel')&&row.querySelector('.gst-sel').value)||0;
+    var taxable=r2(qty*rate),gstAmt=r2(taxable*gPct/100);
+    totalSub+=taxable;totalGST+=gstAmt;
+    var t=row.querySelector('.taxable'),g=row.querySelector('.gst-amt'),rv=row.querySelector('.row-total');
+    if(t)t.textContent='₹'+fmt(taxable);if(g)g.textContent='₹'+fmt(gstAmt);if(rv)rv.textContent='₹'+fmt(taxable+gstAmt);
+  });
+  document.getElementById(pfx+'-subtotal').textContent='₹'+fmt(totalSub);
+  if(mode==='IGST'){document.getElementById(pfx+'-igst').textContent='₹'+fmt(totalGST);document.getElementById(pfx+'-cgst').textContent='₹0.00';document.getElementById(pfx+'-sgst').textContent='₹0.00';}
+  else{var half=r2(totalGST/2);document.getElementById(pfx+'-cgst').textContent='₹'+fmt(half);document.getElementById(pfx+'-sgst').textContent='₹'+fmt(half);document.getElementById(pfx+'-igst').textContent='₹0.00';}
+  document.getElementById(pfx+'-total').textContent='₹'+fmt(totalSub+totalGST);
+}
+function calcItemsTotal(items){var sub=0,gst=0;items.forEach(function(it){var t=r2(it.qty*it.rate);sub+=t;gst+=r2(t*(it.gst||0)/100);});return{sub:sub,gst:gst,total:sub+gst};}
+function getModalItems(tId){
+  return[].slice.call(document.querySelectorAll('#'+tId+' tr')).map(function(row){
+    var sel=row.querySelector('.item-sel');var opt=sel&&sel.options[sel.selectedIndex];
+    return{item:sel&&sel.value,name:opt?opt.text.split(' (')[0]:'—',itemType:opt&&opt.dataset.type?opt.dataset.type:'',qty:parseFloat(row.querySelector('.qty')&&row.querySelector('.qty').value)||0,unit:row.querySelector('.unit')&&row.querySelector('.unit').value||'PCS',rate:parseFloat(row.querySelector('.rate')&&row.querySelector('.rate').value)||0,gst:parseFloat(row.querySelector('.gst-sel')&&row.querySelector('.gst-sel').value)||0};
+  }).filter(function(i){return i.qty>0&&i.rate>0;});
+}
+
+// ══════════════════════════════════════
+// MASTERS
+// ══════════════════════════════════════
+var masterTypeColors={MFR:{bg:'var(--purple-light)',color:'var(--purple)',border:'#ddd6fe'},SUPPLIER:{bg:'var(--green-light)',color:'var(--green)',border:'#bbf7d0'},CUSTOMER:{bg:'var(--amber-light)',color:'var(--amber)',border:'#fde68a'}};
+function setMasterTab(tab){masterTab=tab;document.querySelectorAll('.type-tab').forEach(function(t){t.classList.remove('active');});var el=document.getElementById('mtab-'+tab);if(el)el.classList.add('active');renderMasters();}
+function renderMasters(){
+  var q=(document.getElementById('master-search')?document.getElementById('master-search').value:'').toLowerCase();
+  var list=cache.masters.filter(function(m){if(masterTab!=='ALL'&&m.type!==masterTab)return false;if(!q)return true;return(m.name+m.code+m.phone+m.email+m.gstNo+m.address+m.contactPerson).toLowerCase().includes(q);});
+  var grid=document.getElementById('masters-grid');if(!grid)return;
+  if(!list.length){grid.innerHTML='<div style="grid-column:1/-1"><div class="empty-state"><h3>No masters found</h3><p>Add MFR, Suppliers or Customers using the buttons above.</p></div></div>';return;}
+  grid.innerHTML=list.map(function(m){
+    var tc=masterTypeColors[m.type]||{bg:'var(--surface2)',color:'var(--text2)',border:'var(--border)'};
+    var typeLbl={MFR:'Manufacturer',SUPPLIER:'Supplier',CUSTOMER:'Customer'}[m.type]||m.type;
+    return'<div class="master-card"><div class="mc-top"><span class="badge" style="background:'+tc.bg+';color:'+tc.color+';border:1px solid '+tc.border+'">'+typeLbl+'</span><span class="mc-code">'+m.code+'</span></div><div class="mc-name">'+esc(m.name)+'</div>'+(m.phone?'<div class="mc-detail">📞 '+esc(m.phone)+'</div>':'')+(m.email?'<div class="mc-detail">✉️ '+esc(m.email)+'</div>':'')+(m.gstNo?'<div class="mc-detail" style="font-family:monospace;font-size:11px;color:var(--text3)">GST: '+esc(m.gstNo)+'</div>':'')+(m.address?'<div class="mc-detail" style="font-size:11px;color:var(--text3)">📍 '+esc(m.address)+'</div>':'')+'<div class="mc-actions"><button class="btn btn-ghost btn-sm" style="flex:1" onclick="editMaster(\''+m.code+'\')">Edit</button><button class="btn btn-red btn-sm" onclick="deleteMaster(\''+m.code+'\')">Delete</button></div></div>';
+  }).join('');
+}
+function openMasterModal(type,existingCode){
+  existingCode=existingCode||null;
+  var titles={MFR:'Manufacturer',SUPPLIER:'Supplier',CUSTOMER:'Customer'};
+  document.getElementById('master-modal-title').textContent=(existingCode?'Edit ':'Add ')+titles[type];
+  document.getElementById('m-type').value=type;document.getElementById('m-type-display').value=titles[type];
+  if(existingCode){var m=cache.masters.find(function(x){return x.code===existingCode;});if(!m)return;document.getElementById('m-code').value=m.code;document.getElementById('m-code-display').value=m.code;document.getElementById('m-name').value=m.name;document.getElementById('m-address').value=m.address;document.getElementById('m-phone').value=m.phone;document.getElementById('m-contact').value=m.contactPerson;document.getElementById('m-email').value=m.email;document.getElementById('m-gst').value=m.gstNo;}
+  else{document.getElementById('m-code').value='';document.getElementById('m-code-display').value='Auto-generated';['m-name','m-address','m-phone','m-contact','m-email','m-gst'].forEach(function(id){document.getElementById(id).value='';});}
+  openModal('modal-master');
+}
+function editMaster(code){var m=cache.masters.find(function(x){return x.code===code;});if(!m)return;openMasterModal(m.type,code);}
+function saveMaster(){
+  var name=document.getElementById('m-name').value.trim();if(!name){toast('Name is required.','error');return;}
+  var doc={code:document.getElementById('m-code').value||'',type:document.getElementById('m-type').value,name:name,address:document.getElementById('m-address').value.trim(),phone:document.getElementById('m-phone').value.trim(),contactPerson:document.getElementById('m-contact').value.trim(),email:document.getElementById('m-email').value.trim(),gstNo:document.getElementById('m-gst').value.trim().toUpperCase()};
+  var btn=document.getElementById('save-master-btn');btn.disabled=true;showLoading('Saving master...');
+  apiPost({action:'saveMaster',doc:doc}).then(function(res){hideLoading();btn.disabled=false;if(res.status!=='ok'){toast('Error: '+(res.message||'failed'),'error');return;}closeModal('modal-master');loadAll();toast(doc.name+' saved!','success');}).catch(function(e){hideLoading();btn.disabled=false;toast('Error: '+e.message,'error');});
+}
+function deleteMaster(code){var m=cache.masters.find(function(x){return x.code===code;});if(!confirm('Delete "'+(m?m.name:code)+'"?'))return;showLoading('Deleting...');apiPost({action:'deleteMaster',doc:{code:code}}).then(function(res){hideLoading();if(res.status!=='ok'){toast('Error: '+res.message,'error');return;}loadAll();toast('Deleted.','info');}).catch(function(e){hideLoading();toast('Error: '+e.message,'error');});}
+
+// ── INVENTORY ──
+function openAddItemModal(){
+  ['item-code','item-name','item-category','item-mfr','item-desc'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('item-price').value='';document.getElementById('item-opening').value='';document.getElementById('item-reorder').value='';
+  document.getElementById('item-gst').value='18';document.getElementById('item-unit').value='PCS';
+  if(document.getElementById('item-mfr-sel'))document.getElementById('item-mfr-sel').value='';openModal('modal-add-item');
+}
+function saveItem(){
+  var code=document.getElementById('item-code').value.trim().toUpperCase();var name=document.getElementById('item-name').value.trim();var price=parseFloat(document.getElementById('item-price').value)||0;
+  if(!code||!name){toast('Code and Name required.','error');return;}if(!price){toast('Unit Price required.','error');return;}
+  var mfrVal=document.getElementById('item-mfr').value.trim();
+  if(!mfrVal){var mfrSel=document.getElementById('item-mfr-sel');if(mfrSel&&mfrSel.value){var mfrM=cache.masters.find(function(x){return x.code===mfrSel.value;});mfrVal=mfrM?mfrM.name:'';}}
+  showLoading('Saving...');
+  var item={code:code,name:name,category:document.getElementById('item-category').value.trim()||'Carton',mfr:mfrVal,unit:document.getElementById('item-unit').value,price:price,gst:parseInt(document.getElementById('item-gst').value)||0,stock:parseInt(document.getElementById('item-opening').value)||0,reorder:parseInt(document.getElementById('item-reorder').value)||10,desc:document.getElementById('item-desc').value.trim()};
+  apiPost({action:'saveItem',doc:item}).then(function(res){hideLoading();if(res.status!=='ok'){toast('Error: '+(res.message||'failed'),'error');return;}closeModal('modal-add-item');loadAll();toast('Item saved!','success');}).catch(function(e){hideLoading();toast('Error: '+e.message,'error');});
+}
+function deleteItem(code){if(!confirm('Delete item '+code+'?'))return;showLoading('Deleting...');apiPost({action:'deleteItem',doc:{code:code}}).then(function(res){hideLoading();if(res.status!=='ok'){toast('Error: '+res.message,'error');return;}loadAll();toast('Item deleted.','info');}).catch(function(e){hideLoading();toast('Error: '+e.message,'error');});}
+function renderInventory(filter){
+  filter=(filter||'').toLowerCase();var showZero=document.getElementById('inv-show-zero')&&document.getElementById('inv-show-zero').checked;var tbody=document.getElementById('inventory-table');
+  var items=cache.inventory.filter(function(i){if(!showZero&&i.stock===0)return false;return!filter||i.name.toLowerCase().includes(filter)||i.code.toLowerCase().includes(filter)||i.mfr.toLowerCase().includes(filter)||i.category.toLowerCase().includes(filter);});
+  if(!items.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><h3>No items found</h3></div></td></tr>';return;}
+  tbody.innerHTML=items.map(function(item){
+    var low=item.stock<=item.reorder;var stat=item.stock===0?'<span class="badge badge-red">Out</span>':low?'<span class="badge badge-amber">Low</span>':'<span class="badge badge-green">In Stock</span>';var rowCls=item.stock===0?'row-out':low?'row-low':'';
+    return'<tr class="'+rowCls+'"><td><span class="badge badge-purple" style="font-size:9.5px">'+item.category+'</span></td><td><span class="badge badge-blue">'+item.code+'</span></td><td><strong>'+item.name+'</strong></td><td style="color:var(--text3)">'+item.mfr+'</td><td><strong>'+item.stock+'</strong></td><td>'+item.unit+'</td><td style="font-family:monospace">₹'+fmt(item.price)+'</td><td><span class="gst-pill">'+(item.gst||0)+'%</span></td><td style="font-family:monospace;font-weight:600">₹'+fmt(item.stock*item.price)+'</td><td>'+stat+'</td><td><button class="btn btn-red btn-sm" onclick="deleteItem(\''+item.code+'\')">Delete</button></td></tr>';
+  }).join('');
+}
+function filterInventory(v){renderInventory(v);}
+
+// ── RECEIPTS / SUPPLY / PO ──
+function openNewReceipt(fromPO){
+  fromPO=fromPO||null;document.getElementById('r-no').value=genNo('GRN-',counters.grn);document.getElementById('r-date').value=today();
+  ['r-supplier','r-sup-gst','r-invoice','r-notes'].forEach(function(id){document.getElementById(id).value='';});
+  if(document.getElementById('r-supplier-sel'))document.getElementById('r-supplier-sel').value='';
+  var pb=document.getElementById('r-party-bar');if(pb)pb.classList.remove('show');
+  var sel=document.getElementById('r-ref-po');sel.innerHTML='<option value="">-- None --</option>'+cache.po.filter(function(p){return p.status==='Open';}).map(function(p){return'<option value="'+p.no+'">'+p.no+' — '+p.supplier+'</option>';}).join('');
+  document.getElementById('receipt-items').innerHTML='';setGSTType('receipt','CGST_SGST');
+  if(fromPO){sel.value=fromPO.no;document.getElementById('r-supplier').value=fromPO.supplier;fromPO.items.forEach(function(it){addReceiptRow(it);});}
+  else addReceiptRow();calcTotals('receipt');openModal('modal-receipt');
+}
+function addReceiptRow(pre){
+  pre=pre||null;var tbody=document.getElementById('receipt-items');var tr=document.createElement('tr');
+  tr.innerHTML='<td><select class="item-sel" onchange="applyDefaults(this,this.closest(\'tr\'));calcTotals(\'receipt\')">'+buildOpts()+'</select></td><td><input type="number" class="qty" min="0" step="any" placeholder="1" oninput="calcTotals(\'receipt\')" value="'+(pre?pre.qty:'')+'"></td><td><input type="text" class="unit" style="width:48px" value="'+(pre?pre.unit:'')+'"></td><td><input type="number" class="rate" min="0" step="any" placeholder="0.00" oninput="calcTotals(\'receipt\')" value="'+(pre?pre.rate:'')+'"></td><td><select class="gst-sel" onchange="calcTotals(\'receipt\')"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18">18%</option><option value="28">28%</option></select></td><td class="taxable" style="font-family:monospace;font-size:11.5px">₹0.00</td><td class="gst-amt" style="font-family:monospace;font-size:11.5px;color:var(--amber)">₹0.00</td><td class="row-total" style="font-family:monospace;font-size:11.5px;font-weight:600">₹0.00</td><td><button class="del-row" onclick="this.closest(\'tr\').remove();calcTotals(\'receipt\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>';
+  tbody.appendChild(tr);
+  if(pre){var s=tr.querySelector('.item-sel');for(var o of s.options)if(o.value===pre.item){s.value=pre.item;break;}tr.querySelector('.gst-sel').value=String(pre.gst||18);}
+  else applyDefaults(tr.querySelector('.item-sel'),tr);calcTotals('receipt');
+}
+function saveReceipt(){
+  var supplier=document.getElementById('r-supplier').value.trim();if(!supplier){toast('Supplier required.','error');return;}
+  var items=getModalItems('receipt-items');if(!items.length){toast('Add at least one item.','error');return;}
+  var t=calcItemsTotal(items);var refPO=document.getElementById('r-ref-po').value;
+  var doc={no:document.getElementById('r-no').value,date:document.getElementById('r-date').value,supplier:supplier,supGst:document.getElementById('r-sup-gst').value,invoice:document.getElementById('r-invoice').value,refPO:refPO,gstType:gstMode.receipt,items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,notes:document.getElementById('r-notes').value};
+  var btn=document.getElementById('save-receipt-btn');btn.disabled=true;showLoading('Saving receipt...');
+  apiPost({action:'saveReceipt',doc:doc}).then(function(res){hideLoading();btn.disabled=false;if(res.status!=='ok'){toast('Error: '+(res.message||'failed'),'error');return;}if(refPO)apiPost({action:'updatePOStatus',doc:{no:refPO,status:'Received'}});closeModal('modal-receipt');loadAll();toast('GRN '+doc.no+' saved!','success');}).catch(function(e){hideLoading();btn.disabled=false;toast('Error: '+e.message,'error');});
+}
+function renderReceipts(){
+  var tbody=document.getElementById('receipts-table');if(!cache.receipts.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><h3>No receipts yet</h3></div></td></tr>';return;}
+  tbody.innerHTML=[].concat(cache.receipts).reverse().map(function(r){var gt=r.gstType==='IGST'?'<span class="igst-badge">IGST</span>':'<span class="cgst-badge">CGST+SGST</span>';return'<tr><td><span class="badge badge-blue">'+r.no+'</span></td><td>'+fmtDate(r.date)+'</td><td><strong>'+r.supplier+'</strong></td><td>'+r.items.length+' item(s)</td><td style="font-family:monospace">₹'+fmt(r.subtotal)+'</td><td>'+gt+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(r.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(r.total)+'</td><td><button class="btn btn-ghost btn-sm" onclick="printSavedDoc(\'receipt\',\''+r.no+'\')">Print</button></td></tr>';}).join('');
+}
+function openNewSupply(){
+  document.getElementById('s-no').value=genNo('DO-',counters.do);document.getElementById('s-date').value=today();
+  ['s-customer','s-cust-gst','s-address','s-cust-po'].forEach(function(id){document.getElementById(id).value='';});
+  if(document.getElementById('s-customer-sel'))document.getElementById('s-customer-sel').value='';
+  var pb=document.getElementById('s-party-bar');if(pb)pb.classList.remove('show');
+  document.getElementById('supply-items').innerHTML='';setGSTType('supply','CGST_SGST');addSupplyRow();calcTotals('supply');openModal('modal-supply');
+}
+function addSupplyRow(){
+  var tbody=document.getElementById('supply-items');var tr=document.createElement('tr');
+  tr.innerHTML='<td><select class="item-sel" onchange="applyDefaults(this,this.closest(\'tr\'));updateAvail(this.closest(\'tr\'));calcTotals(\'supply\')">'+buildOpts()+'</select></td><td class="avail" style="font-family:monospace;font-size:11px;color:var(--text3)">—</td><td><input type="number" class="qty" min="0" step="any" placeholder="1" oninput="calcTotals(\'supply\')"></td><td><input type="text" class="unit" style="width:44px"></td><td><input type="number" class="rate" min="0" step="any" placeholder="0.00" oninput="calcTotals(\'supply\')"></td><td><select class="gst-sel" onchange="calcTotals(\'supply\')"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18">18%</option><option value="28">28%</option></select></td><td class="taxable" style="font-family:monospace;font-size:11.5px">₹0.00</td><td class="gst-amt" style="font-family:monospace;font-size:11.5px;color:var(--amber)">₹0.00</td><td class="row-total" style="font-family:monospace;font-size:11.5px;font-weight:600">₹0.00</td><td><button class="del-row" onclick="this.closest(\'tr\').remove();calcTotals(\'supply\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>';
+  tbody.appendChild(tr);applyDefaults(tr.querySelector('.item-sel'),tr);updateAvail(tr);calcTotals('supply');
+}
+function updateAvail(tr){var opt=tr.querySelector('.item-sel').options[tr.querySelector('.item-sel').selectedIndex];tr.querySelector('.avail').textContent=opt?(opt.dataset.stock||'0'):'—';}
+function saveSupply(){
+  var customer=document.getElementById('s-customer').value.trim();if(!customer){toast('Customer required.','error');return;}
+  var items=getModalItems('supply-items');if(!items.length){toast('Add at least one item.','error');return;}
+  var t=calcItemsTotal(items);
+  var doc={no:document.getElementById('s-no').value,date:document.getElementById('s-date').value,customer:customer,custGst:document.getElementById('s-cust-gst').value,address:document.getElementById('s-address').value,custPO:document.getElementById('s-cust-po').value,gstType:gstMode.supply,items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total};
+  var btn=document.getElementById('save-supply-btn');btn.disabled=true;showLoading('Saving supply order...');
+  apiPost({action:'saveSupply',doc:doc}).then(function(res){hideLoading();btn.disabled=false;if(res.status!=='ok'){toast('Error: '+(res.message||'failed'),'error');return;}closeModal('modal-supply');loadAll();toast('DO '+doc.no+' saved!','success');}).catch(function(e){hideLoading();btn.disabled=false;toast('Error: '+e.message,'error');});
+}
+function renderSupply(){
+  var tbody=document.getElementById('supply-table');if(!cache.supply.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><h3>No supply orders</h3></div></td></tr>';return;}
+  tbody.innerHTML=[].concat(cache.supply).reverse().map(function(s){var gt=s.gstType==='IGST'?'<span class="igst-badge">IGST</span>':'<span class="cgst-badge">CGST+SGST</span>';return'<tr><td><span class="badge badge-amber">'+s.no+'</span></td><td>'+fmtDate(s.date)+'</td><td><strong>'+s.customer+'</strong></td><td>'+s.items.length+' item(s)</td><td style="font-family:monospace">₹'+fmt(s.subtotal)+'</td><td>'+gt+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(s.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(s.total)+'</td><td><button class="btn btn-ghost btn-sm" onclick="printSavedDoc(\'supply\',\''+s.no+'\')">Print</button></td></tr>';}).join('');
+}
+function openNewPO(){
+  document.getElementById('p-no').value=genNo('PO-',counters.po);document.getElementById('p-date').value=today();
+  ['p-supplier','p-sup-gst','p-address','p-terms'].forEach(function(id){document.getElementById(id).value='';});
+  if(document.getElementById('p-supplier-sel'))document.getElementById('p-supplier-sel').value='';
+  var pb=document.getElementById('p-party-bar');if(pb)pb.classList.remove('show');
+  document.getElementById('p-delivery').value='';document.getElementById('p-payment').value='Net 30';document.getElementById('po-items').innerHTML='';
+  setGSTType('po','CGST_SGST');addPORow();calcTotals('po');openModal('modal-po');
+}
+function addPORow(){
+  var tbody=document.getElementById('po-items');var tr=document.createElement('tr');
+  tr.innerHTML='<td><select class="item-sel" onchange="applyDefaults(this,this.closest(\'tr\'));calcTotals(\'po\')">'+buildOpts()+'</select></td><td><input type="number" class="qty" min="0" step="any" placeholder="1" oninput="calcTotals(\'po\')"></td><td><input type="text" class="unit" style="width:48px"></td><td><input type="number" class="rate" min="0" step="any" placeholder="0.00" oninput="calcTotals(\'po\')"></td><td><select class="gst-sel" onchange="calcTotals(\'po\')"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18">18%</option><option value="28">28%</option></select></td><td class="taxable" style="font-family:monospace;font-size:11.5px">₹0.00</td><td class="gst-amt" style="font-family:monospace;font-size:11.5px;color:var(--amber)">₹0.00</td><td class="row-total" style="font-family:monospace;font-size:11.5px;font-weight:600">₹0.00</td><td><button class="del-row" onclick="this.closest(\'tr\').remove();calcTotals(\'po\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></td>';
+  tbody.appendChild(tr);applyDefaults(tr.querySelector('.item-sel'),tr);calcTotals('po');
+}
+function savePO(){
+  var supplier=document.getElementById('p-supplier').value.trim();if(!supplier){toast('Supplier required.','error');return;}
+  var items=getModalItems('po-items');if(!items.length){toast('Add at least one item.','error');return;}
+  var t=calcItemsTotal(items);
+  var doc={no:document.getElementById('p-no').value,date:document.getElementById('p-date').value,supplier:supplier,supGst:document.getElementById('p-sup-gst').value,delivery:document.getElementById('p-delivery').value,payment:document.getElementById('p-payment').value,address:document.getElementById('p-address').value,terms:document.getElementById('p-terms').value,gstType:gstMode.po,items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:'Open'};
+  var btn=document.getElementById('save-po-btn');btn.disabled=true;showLoading('Saving PO...');
+  apiPost({action:'savePO',doc:doc}).then(function(res){hideLoading();btn.disabled=false;if(res.status!=='ok'){toast('Error: '+(res.message||'failed'),'error');return;}closeModal('modal-po');loadAll();toast('PO '+doc.no+' issued!','success');}).catch(function(e){hideLoading();btn.disabled=false;toast('Error: '+e.message,'error');});
+}
+function renderPO(){
+  var tbody=document.getElementById('po-table');if(!cache.po.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><h3>No purchase orders</h3></div></td></tr>';return;}
+  tbody.innerHTML=[].concat(cache.po).reverse().map(function(p){
+    var gt=p.gstType==='IGST'?'<span class="igst-badge">IGST</span>':'<span class="cgst-badge">CGST+SGST</span>';var isOpen=p.status==='Open';
+    return'<tr><td><span class="badge badge-green">'+p.no+'</span></td><td>'+fmtDate(p.date)+'</td><td><strong>'+p.supplier+'</strong></td><td>'+p.items.length+' item(s)</td><td style="font-family:monospace">₹'+fmt(p.subtotal)+'</td><td>'+gt+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(p.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(p.total)+'</td><td style="color:var(--text3)">'+fmtDate(p.delivery)+'</td><td><span class="badge '+(isOpen?'badge-amber':'badge-green')+'">'+p.status+'</span></td><td style="display:flex;gap:5px;flex-wrap:wrap">'+(isOpen?'<button class="btn btn-primary btn-sm" onclick="convertPOtoReceipt(\''+p.no+'\')">→ GRN</button>':'')+'<button class="btn btn-ghost btn-sm" onclick="printSavedDoc(\'po\',\''+p.no+'\')">Print</button></td></tr>';
+  }).join('');
+}
+function convertPOtoReceipt(poNo){var po=cache.po.find(function(p){return p.no===poNo;});if(!po)return;closeModal('modal-po');openNewReceipt(po);toast('PO '+poNo+' loaded.','info');}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  document.getElementById('d-items').textContent=cache.inventory.length;document.getElementById('d-receipts').textContent=cache.receipts.length;document.getElementById('d-supply').textContent=cache.supply.length;document.getElementById('d-po').textContent=cache.po.filter(function(p){return p.status==='Open';}).length;
+  var tbody=document.getElementById('dash-inv-table');if(!cache.inventory.length){tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><h3>No data yet</h3></div></td></tr>';return;}
+  var showZ=document.getElementById('dash-show-zero')&&document.getElementById('dash-show-zero').checked;
+  var items=cache.inventory.filter(function(i){return showZ||i.stock>0;}).slice(0,25);
+  tbody.innerHTML=items.map(function(item){
+    var low=item.stock<=item.reorder;var st=item.stock===0?'<span class="badge badge-red">Out</span>':low?'<span class="badge badge-amber">Low</span>':'<span class="badge badge-green">OK</span>';
+    return'<tr><td><span class="badge badge-purple" style="font-size:9.5px">'+item.category+'</span></td><td><span class="badge badge-blue">'+item.code+'</span></td><td>'+item.name+'</td><td style="color:var(--text3)">'+item.mfr+'</td><td><strong>'+item.stock+'</strong></td><td style="font-family:monospace">₹'+fmt(item.price)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(item.stock*item.price)+'</td><td>'+st+'</td></tr>';
+  }).join('');renderDashboardCharts();
+}
+function renderDashboardCharts(){
+  var months=getLast6Months();var rByM=groupByMonth(cache.receipts,'date','total');var sByM=groupByMonth(cache.supply,'date','total');
+  mkChart('chart-monthly','bar',{labels:months.map(function(m){return m.label;}),datasets:[{label:'Receipts',data:months.map(function(m){return rByM[m.key]||0;}),backgroundColor:'rgba(37,99,235,.7)',borderRadius:5},{label:'Supply',data:months.map(function(m){return sByM[m.key]||0;}),backgroundColor:'rgba(217,119,6,.7)',borderRadius:5}]});
+  var typeMap={};cache.inventory.forEach(function(i){typeMap[i.category]=(typeMap[i.category]||0)+i.stock*i.price;});var tkeys=Object.keys(typeMap);var pieColors=['#2563eb','#7c3aed','#0891b2','#16a34a','#d97706','#dc2626'];
+  mkChart('chart-pie','doughnut',{labels:tkeys,datasets:[{data:tkeys.map(function(k){return r2(typeMap[k]);}),backgroundColor:pieColors.slice(0,tkeys.length),borderWidth:2,borderColor:'#fff'}]});
+}
+
+// ══════════════════════════════════════
+// CONSOLIDATED VIEW
+// ══════════════════════════════════════
+function initConsDates(){
+  var f=document.getElementById('cons-from');var t=document.getElementById('cons-to');
+  if(f&&!f.value)f.value=new Date().getFullYear()+'-01-01';if(t&&!t.value)t.value=today();
+}
+function runConsolidated(){
+  var from=document.getElementById('cons-from').value;var to=document.getElementById('cons-to').value;
+  var recs=cache.receipts.filter(function(x){return(!from||x.date>=from)&&(!to||x.date<=to);});
+  var sups=cache.supply.filter(function(x){return(!from||x.date>=from)&&(!to||x.date<=to);});
+  var pos=cache.po.filter(function(x){return(!from||x.date>=from)&&(!to||x.date<=to);});
+  var totRec=recs.reduce(function(s,x){return s+x.total;},0);
+  var totSup=sups.reduce(function(s,x){return s+x.total;},0);
+  var totPO=pos.reduce(function(s,x){return s+x.total;},0);
+  var totGSTPaid=recs.reduce(function(s,x){return s+x.gstAmt;},0);
+  var totGSTColl=sups.reduce(function(s,x){return s+x.gstAmt;},0);
+  var stockVal=cache.inventory.reduce(function(s,i){return s+i.stock*i.price;},0);
+  var recQty=recs.reduce(function(s,x){return s+x.items.reduce(function(q,it){return q+it.qty;},0);},0);
+  var supQty=sups.reduce(function(s,x){return s+x.items.reduce(function(q,it){return q+it.qty;},0);},0);
+  // KPI Ribbon
+  document.getElementById('cons-kpi').innerHTML='<div class="kpi-ribbon">'+
+    '<div class="kpi-cell green"><div class="kpi-cell-label">TOTAL RECEIPT VALUE</div><div class="kpi-cell-val">₹'+fmt(totRec)+'</div><div class="kpi-cell-sub">'+recs.length+' GRNs | '+fmtN(recQty)+' units</div></div>'+
+    '<div class="kpi-cell amber"><div class="kpi-cell-label">TOTAL SUPPLY VALUE</div><div class="kpi-cell-val">₹'+fmt(totSup)+'</div><div class="kpi-cell-sub">'+sups.length+' DOs | '+fmtN(supQty)+' units</div></div>'+
+    '<div class="kpi-cell purple"><div class="kpi-cell-label">OPEN PO VALUE</div><div class="kpi-cell-val">₹'+fmt(totPO)+'</div><div class="kpi-cell-sub">'+pos.length+' POs</div></div>'+
+    '<div class="kpi-cell accent"><div class="kpi-cell-label">CURRENT STOCK VALUE</div><div class="kpi-cell-val">₹'+fmt(stockVal)+'</div><div class="kpi-cell-sub">'+cache.inventory.length+' SKUs</div></div>'+
+    '<div class="kpi-cell teal"><div class="kpi-cell-label">NET GST POSITION</div><div class="kpi-cell-val">₹'+fmt(r2(totGSTColl-totGSTPaid))+'</div><div class="kpi-cell-sub">Coll: ₹'+fmt(totGSTColl)+' | Paid: ₹'+fmt(totGSTPaid)+'</div></div>'+
+    '<div class="kpi-cell red"><div class="kpi-cell-label">NET FLOW</div><div class="kpi-cell-val">₹'+fmt(r2(totSup-totRec))+'</div><div class="kpi-cell-sub">'+(totSup>=totRec?'Surplus':'Deficit')+'</div></div>'+
+  '</div>';
+  // Monthly breakdown
+  var allMonths=getMonthRange(from||cache.receipts[0]&&cache.receipts[0].date||today().slice(0,7)+'-01',to||today());
+  var rByM=groupByMonth(recs,'date','total');var ssByM=groupByMonth(sups,'date','total');var pByM=groupByMonth(pos,'date','total');
+  var rQByM=groupByMonthItems(recs);var sQByM=groupByMonthItems(sups);
+  var rGByM=groupByMonth(recs,'date','gstAmt');var sGByM=groupByMonth(sups,'date','gstAmt');
+  // Charts
+  mkChart('cons-chart-trend','line',{
+    labels:allMonths.map(function(m){return m.label;}),
+    datasets:[
+      {label:'Receipt (₹)',data:allMonths.map(function(m){return rByM[m.key]||0;}),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,.08)',tension:.3,fill:true,pointRadius:3},
+      {label:'Supply (₹)',data:allMonths.map(function(m){return ssByM[m.key]||0;}),borderColor:'#d97706',backgroundColor:'rgba(217,119,6,.08)',tension:.3,fill:true,pointRadius:3}
+    ]
+  },{plugins:{legend:{labels:{font:{family:'Plus Jakarta Sans',size:11},color:'#475569'}}}});
+  mkChart('cons-chart-vol','bar',{
+    labels:allMonths.map(function(m){return m.label;}),
+    datasets:[
+      {label:'Receipts (count)',data:allMonths.map(function(m){return recs.filter(function(r){return(r.date||'').slice(0,7)===m.key;}).length;}),backgroundColor:'rgba(37,99,235,.75)',borderRadius:4},
+      {label:'Supply (count)',data:allMonths.map(function(m){return sups.filter(function(s){return(s.date||'').slice(0,7)===m.key;}).length;}),backgroundColor:'rgba(217,119,6,.75)',borderRadius:4},
+      {label:'POs (count)',data:allMonths.map(function(m){return pos.filter(function(p){return(p.date||'').slice(0,7)===m.key;}).length;}),backgroundColor:'rgba(124,58,237,.75)',borderRadius:4}
+    ]
+  });
+  // Category donut
+  var catMap={};cache.inventory.forEach(function(i){catMap[i.category]=(catMap[i.category]||0)+i.stock*i.price;});var ckeys=Object.keys(catMap);var pieC=['#2563eb','#7c3aed','#0891b2','#16a34a','#d97706','#dc2626','#db2777','#0d9488'];
+  mkChart('cons-chart-cat','doughnut',{labels:ckeys,datasets:[{data:ckeys.map(function(k){return r2(catMap[k]);}),backgroundColor:pieC.slice(0,ckeys.length),borderWidth:2,borderColor:'#fff'}]});
+  // Top items by txn count
+  var itemTxn={};recs.forEach(function(r){r.items.forEach(function(it){itemTxn[it.item]=(itemTxn[it.item]||0)+1;});});sups.forEach(function(s){s.items.forEach(function(it){itemTxn[it.item]=(itemTxn[it.item]||0)+1;});});
+  var topTxn=Object.keys(itemTxn).sort(function(a,b){return itemTxn[b]-itemTxn[a];}).slice(0,10);
+  mkChart('cons-chart-items','bar',{labels:topTxn.map(function(c){var inv=cache.inventory.find(function(i){return i.code===c;});return inv?inv.name.slice(0,18):c;}),datasets:[{label:'Transactions',data:topTxn.map(function(c){return itemTxn[c];}),backgroundColor:'rgba(13,148,136,.75)',borderRadius:4}]},{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},color:'#94a3b8'},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:10},color:'#475569'},grid:{color:'#f1f5f9'}}}});
+  // Monthly table
+  var mtbody=document.getElementById('cons-monthly-body');
+  mtbody.innerHTML=allMonths.map(function(m){
+    var rv=r2(rByM[m.key]||0),sv=r2(ssByM[m.key]||0),pv=r2(pByM[m.key]||0),rq=rQByM[m.key]||0,sq=sQByM[m.key]||0,gp=r2(rGByM[m.key]||0),gc=r2(sGByM[m.key]||0),net=r2(sv-rv);
+    var netCls=net>=0?'color:var(--green)':'color:var(--red)';
+    return'<tr><td><strong>'+m.label+'</strong></td><td style="text-align:right;font-family:monospace">₹'+fmt(rv)+'</td><td style="text-align:right;font-family:monospace">'+fmtN(rq)+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(sv)+'</td><td style="text-align:right;font-family:monospace">'+fmtN(sq)+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(pv)+'</td><td style="text-align:right;font-family:monospace;font-weight:700;'+netCls+'">₹'+fmt(net)+'</td><td style="text-align:right;font-family:monospace;color:var(--amber)">₹'+fmt(gp)+'</td><td style="text-align:right;font-family:monospace;color:var(--green)">₹'+fmt(gc)+'</td></tr>';
+  }).join('');
+  // Add totals row
+  var tRv=allMonths.reduce(function(s,m){return s+(rByM[m.key]||0);},0);
+  var tSv=allMonths.reduce(function(s,m){return s+(ssByM[m.key]||0);},0);
+  var tPv=allMonths.reduce(function(s,m){return s+(pByM[m.key]||0);},0);
+  var tRq=allMonths.reduce(function(s,m){return s+(rQByM[m.key]||0);},0);
+  var tSq=allMonths.reduce(function(s,m){return s+(sQByM[m.key]||0);},0);
+  var tGp=allMonths.reduce(function(s,m){return s+(rGByM[m.key]||0);},0);
+  var tGc=allMonths.reduce(function(s,m){return s+(sGByM[m.key]||0);},0);
+  var tNet=r2(tSv-tRv);
+  mtbody.innerHTML+='<tr style="background:var(--surface3);font-weight:700"><td>TOTAL</td><td style="text-align:right;font-family:monospace">₹'+fmt(r2(tRv))+'</td><td style="text-align:right;font-family:monospace">'+fmtN(tRq)+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(r2(tSv))+'</td><td style="text-align:right;font-family:monospace">'+fmtN(tSq)+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(r2(tPv))+'</td><td style="text-align:right;font-family:monospace;color:'+(tNet>=0?'var(--green)':'var(--red)')+'">₹'+fmt(tNet)+'</td><td style="text-align:right;font-family:monospace;color:var(--amber)">₹'+fmt(r2(tGp))+'</td><td style="text-align:right;font-family:monospace;color:var(--green)">₹'+fmt(r2(tGc))+'</td></tr>';
+  // Item consolidated
+  var itbody=document.getElementById('cons-items-body');
+  var itemMap={};
+  recs.forEach(function(r){r.items.forEach(function(it){if(!itemMap[it.item])itemMap[it.item]={code:it.item,name:it.name,type:it.itemType,inQty:0,outQty:0,recVal:0,supVal:0};itemMap[it.item].inQty+=it.qty;itemMap[it.item].recVal+=r2(it.qty*it.rate);});});
+  sups.forEach(function(s){s.items.forEach(function(it){if(!itemMap[it.item])itemMap[it.item]={code:it.item,name:it.name,type:it.itemType,inQty:0,outQty:0,recVal:0,supVal:0};itemMap[it.item].outQty+=it.qty;itemMap[it.item].supVal+=r2(it.qty*it.rate);});});
+  var rows=Object.values(itemMap).sort(function(a,b){return(b.recVal+b.supVal)-(a.recVal+a.supVal);});
+  if(!rows.length){itbody.innerHTML='<tr><td colspan="10"><div class="empty-state"><h3>No item data in selected range</h3></div></td></tr>';return;}
+  itbody.innerHTML=rows.map(function(item){
+    var inv=cache.inventory.find(function(i){return i.code===item.code;});var stk=inv?inv.stock:0;var sv=inv?inv.stock*inv.price:0;
+    var net=item.inQty-item.outQty;var pct=item.inQty>0?Math.min(100,Math.round(item.outQty/item.inQty*100)):0;
+    var barClr=pct>80?'red':pct>50?'amber':'green';
+    return'<tr><td><span class="badge badge-blue" style="font-size:9.5px">'+item.code+'</span></td><td><strong>'+item.name+'</strong></td><td><span class="badge badge-purple" style="font-size:9.5px">'+item.type+'</span></td><td style="text-align:right;font-family:monospace;color:var(--green);font-weight:700">+'+fmtN(item.inQty)+'</td><td style="text-align:right;font-family:monospace;color:var(--red);font-weight:700">-'+fmtN(item.outQty)+'</td><td style="text-align:right;font-family:monospace;font-weight:700">'+fmtN(stk)+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(item.recVal)+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(item.supVal)+'</td><td style="text-align:right;font-family:monospace;font-weight:700">₹'+fmt(sv)+'</td><td style="min-width:80px"><div style="font-size:10px;color:var(--text3);margin-bottom:3px">'+pct+'% out</div><div class="progress-bar-wrap"><div class="progress-bar-fill '+barClr+'" style="width:'+pct+'%"></div></div></td></tr>';
+  }).join('');
+}
+function groupByMonthItems(arr){var m={};arr.forEach(function(x){var k=(x.date||'').slice(0,7);if(k)m[k]=(m[k]||0)+x.items.reduce(function(s,it){return s+it.qty;},0);});return m;}
+function exportConsolidatedCSV(){toast('Exporting consolidated...','info');}
+function exportItemConsolidatedCSV(){
+  var rows=[['Code','Item','Type','Total In','Total Out','Current Stock','Receipt Value','Supply Value','Stock Value']];
+  document.querySelectorAll('#cons-items-body tr').forEach(function(tr){rows.push([].slice.call(tr.querySelectorAll('td')).map(function(td){return'"'+td.innerText.trim()+'"';}).join(','));});
+  csvDown(rows.map(function(r){return Array.isArray(r)?r.join(','):r;}).join('\n'),'item_consolidated.csv');
+  toast('CSV downloaded!','success');
+}
+
+// ══════════════════════════════════════
+// GST RETURNS REPORT
+// ══════════════════════════════════════
+function exportPartyCSV(){toast('Export party CSV...','info');}
+
+// ══════════════════════════════════════
+// STOCK ALERTS
+// ══════════════════════════════════════
+var _alertAll=[];
+function renderStockAlerts(){
+  var outItems=cache.inventory.filter(function(i){return i.stock===0;});
+  var lowItems=cache.inventory.filter(function(i){return i.stock>0&&i.stock<=i.reorder;});
+  _alertAll=cache.inventory.slice();
+  // KPI
+  document.getElementById('alerts-kpi').innerHTML='<div class="kpi-ribbon">'+
+    '<div class="kpi-cell red"><div class="kpi-cell-label">OUT OF STOCK</div><div class="kpi-cell-val">'+outItems.length+'</div><div class="kpi-cell-sub">Items with zero stock</div></div>'+
+    '<div class="kpi-cell amber"><div class="kpi-cell-label">LOW STOCK</div><div class="kpi-cell-val">'+lowItems.length+'</div><div class="kpi-cell-sub">Below reorder level</div></div>'+
+    '<div class="kpi-cell green"><div class="kpi-cell-label">HEALTHY STOCK</div><div class="kpi-cell-val">'+cache.inventory.filter(function(i){return i.stock>i.reorder;}).length+'</div></div>'+
+    '<div class="kpi-cell accent"><div class="kpi-cell-label">REORDER VALUE</div><div class="kpi-cell-val">₹'+fmt(r2(lowItems.reduce(function(s,i){return s+i.reorder*i.price;},0)))+'</div><div class="kpi-cell-sub">Est. cost to reorder low items</div></div>'+
+  '</div>';
+  // Out of stock
+  document.getElementById('alert-out-body').innerHTML=outItems.length?outItems.map(function(item){
+    return'<tr class="row-out"><td><span class="badge badge-blue" style="font-size:9.5px">'+item.code+'</span></td><td><strong>'+item.name+'</strong></td><td><span class="badge badge-purple" style="font-size:9.5px">'+item.category+'</span></td><td style="color:var(--text3)">'+item.mfr+'</td><td style="text-align:right;color:var(--red);font-weight:700">0 '+item.unit+'</td><td style="text-align:right">'+item.reorder+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(item.price)+'</td><td><button class="btn btn-primary btn-sm" onclick="openNewPO()">+ PO</button></td></tr>';
+  }).join(''):'<tr><td colspan="8"><div class="empty-state"><h3>No out-of-stock items</h3><p>All items are in stock.</p></div></td></tr>';
+  // Low stock
+  document.getElementById('alert-low-body').innerHTML=lowItems.length?lowItems.map(function(item){
+    var shortage=item.reorder-item.stock;var reorderVal=r2(shortage*item.price);
+    return'<tr class="row-low"><td><span class="badge badge-blue" style="font-size:9.5px">'+item.code+'</span></td><td><strong>'+item.name+'</strong></td><td><span class="badge badge-purple" style="font-size:9.5px">'+item.category+'</span></td><td style="color:var(--text3)">'+item.mfr+'</td><td style="text-align:right;color:var(--amber);font-weight:700">'+item.stock+' '+item.unit+'</td><td style="text-align:right">'+item.reorder+'</td><td style="text-align:right;color:var(--red);font-weight:700">'+shortage+' '+item.unit+'</td><td style="text-align:right;font-family:monospace;color:var(--red)">₹'+fmt(reorderVal)+'</td><td><button class="btn btn-amber btn-sm" onclick="openNewPO()">+ PO</button></td></tr>';
+  }).join(''):'<tr><td colspan="9"><div class="empty-state"><h3>No low-stock items</h3><p>All items are above reorder levels.</p></div></td></tr>';
+  // Reorder suggestions
+  var needReorder=cache.inventory.filter(function(i){return i.stock<=i.reorder;});
+  document.getElementById('alert-reorder-body').innerHTML=needReorder.length?needReorder.map(function(item){
+    // Find last supplier and receipt qty
+    var lastRec=null;for(var i=cache.receipts.length-1;i>=0;i--){var found=cache.receipts[i].items.find(function(it){return it.item===item.code;});if(found){lastRec={supplier:cache.receipts[i].supplier,qty:found.qty};break;}}
+    var suggestQty=lastRec?lastRec.qty:item.reorder*2;var estVal=r2(suggestQty*item.price);
+    return'<tr><td><span class="badge badge-blue" style="font-size:9.5px">'+item.code+'</span></td><td><strong>'+item.name+'</strong></td><td style="color:var(--text3);font-size:12px">'+( lastRec?lastRec.supplier:'—')+'</td><td style="text-align:right;font-weight:700;color:'+(item.stock===0?'var(--red)':'var(--amber)')+'">'+item.stock+' '+item.unit+'</td><td style="text-align:right">'+item.reorder+'</td><td style="text-align:right;color:var(--text3)">'+(lastRec?lastRec.qty:'—')+'</td><td style="text-align:right;font-weight:700;color:var(--purple)">'+suggestQty+' '+item.unit+'</td><td style="text-align:right;font-family:monospace;color:var(--purple)">₹'+fmt(estVal)+'</td><td><button class="btn btn-primary btn-sm" onclick="openNewPO()">+ PO</button></td></tr>';
+  }).join(''):'<tr><td colspan="9"><div class="empty-state"><h3>No reorder needed</h3></div></td></tr>';
+  // All items
+  renderAlertAll('');
+}
+function setAlertTab(tab,el){
+  alertTab=tab;
+  document.querySelectorAll('#alert-tabs .report-tab').forEach(function(t){t.classList.remove('active');});
+  if(el)el.classList.add('active');
+  document.querySelectorAll('.report-panel').forEach(function(p){p.classList.remove('active');});
+  document.getElementById('alert-panel-'+tab).classList.add('active');
+}
+function renderAlertAll(filter){
+  filter=(filter||'').toLowerCase();
+  var items=_alertAll.filter(function(i){return!filter||i.name.toLowerCase().includes(filter)||i.code.toLowerCase().includes(filter);});
+  var tbody=document.getElementById('alert-all-body');
+  tbody.innerHTML=items.map(function(item){
+    var pct=item.reorder>0?Math.min(100,Math.round(item.stock/item.reorder*100)):100;var barClr=item.stock===0?'red':item.stock<=item.reorder?'amber':'green';
+    var statBadge=item.stock===0?'<span class="badge badge-red">Out</span>':item.stock<=item.reorder?'<span class="badge badge-amber">Low</span>':'<span class="badge badge-green">OK</span>';
+    return'<tr><td><span class="badge badge-blue" style="font-size:9.5px">'+item.code+'</span></td><td><strong>'+item.name+'</strong></td><td><span class="badge badge-purple" style="font-size:9.5px">'+item.category+'</span></td><td style="text-align:right;font-weight:700">'+item.stock+'</td><td style="text-align:right">'+item.reorder+'</td><td style="text-align:right"><div style="font-size:11px;color:var(--text3);margin-bottom:3px">'+pct+'%</div><div class="progress-bar-wrap"><div class="progress-bar-fill '+barClr+'" style="width:'+pct+'%"></div></div></td><td>'+statBadge+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(item.stock*item.price)+'</td></tr>';
+  }).join('');
+}
+function filterAlertAll(v){renderAlertAll(v);}
+function exportAlertsCSV(type){
+  var map={out:'alert-out-body',low:'alert-low-body',reorder:'alert-reorder-body'};var tbody=document.getElementById(map[type]);
+  if(!tbody)return;var rows=[['Code','Item','Stock','Reorder Level','Details']];
+  tbody.querySelectorAll('tr').forEach(function(tr){rows.push([].slice.call(tr.querySelectorAll('td')).map(function(td){return'"'+td.innerText.trim()+'"';}).join(','));});
+  csvDown(rows.map(function(r){return Array.isArray(r)?r.join(','):r;}).join('\n'),'alerts_'+type+'.csv');toast('CSV downloaded!','success');
+}
+
+// ── REPORTS (original) ──
+function initReportDates(){
+  var now=new Date();var y=now.getFullYear();var m=now.getMonth();
+  var f=document.getElementById('rpt-from');var t=document.getElementById('rpt-to');
+  if(f&&!f.value)f.value=y+'-'+String(m+1).padStart(2,'0')+'-01';if(t&&!t.value)t.value=today();
+}
+function runReport(){
+  var from=document.getElementById('rpt-from').value;var to=document.getElementById('rpt-to').value;var type=document.getElementById('rpt-type').value;
+  var all=[];
+  if(type==='all'||type==='receipts')cache.receipts.forEach(function(r){all.push({no:r.no,date:r.date,type:'Receipt',party:r.supplier,items:r.items.length,subtotal:r.subtotal,gstAmt:r.gstAmt,total:r.total});});
+  if(type==='all'||type==='supply')cache.supply.forEach(function(s){all.push({no:s.no,date:s.date,type:'Supply',party:s.customer,items:s.items.length,subtotal:s.subtotal,gstAmt:s.gstAmt,total:s.total});});
+  if(type==='all'||type==='po')cache.po.forEach(function(p){all.push({no:p.no,date:p.date,type:'PO',party:p.supplier,items:p.items.length,subtotal:p.subtotal,gstAmt:p.gstAmt,total:p.total});});
+  if(from)all=all.filter(function(x){return x.date>=from;});if(to)all=all.filter(function(x){return x.date<=to;});all.sort(function(a,b){return a.date<b.date?-1:1;});
+  var tbody=document.getElementById('rpt-table');
+  if(!all.length){tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><h3>No data for selected range</h3></div></td></tr>';}
+  else{tbody.innerHTML=all.map(function(x){var tc={Receipt:'badge-blue',Supply:'badge-amber',PO:'badge-green'}[x.type]||'badge-blue';return'<tr><td><span class="badge '+tc+'">'+x.no+'</span></td><td>'+fmtDate(x.date)+'</td><td><span class="badge '+tc+'">'+x.type+'</span></td><td>'+x.party+'</td><td>'+x.items+'</td><td style="font-family:monospace">₹'+fmt(x.subtotal)+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(x.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(x.total)+'</td></tr>';}).join('');}
+  var totRec=cache.receipts.filter(function(x){return(!from||x.date>=from)&&(!to||x.date<=to);}).reduce(function(s,x){return s+x.total;},0);
+  var totSup=cache.supply.filter(function(x){return(!from||x.date>=from)&&(!to||x.date<=to);}).reduce(function(s,x){return s+x.total;},0);
+  var totGST=all.reduce(function(s,x){return s+x.gstAmt;},0);
+  document.getElementById('rpt-summary-cards').innerHTML=mkSummaryCard('Total Receipt Value','₹'+fmt(totRec),'green','Inward goods','#16a34a')+mkSummaryCard('Total Supply Value','₹'+fmt(totSup),'amber','Dispatched goods','#d97706')+mkSummaryCard('Total GST (all)','₹'+fmt(totGST),'purple','CGST+SGST+IGST','#7c3aed');
+  var months=getLast6Months();var rByM=groupByMonth(cache.receipts.filter(function(x){return(!from||x.date>=from)&&(!to||x.date<=to);}),'date','total');var ssByM=groupByMonth(cache.supply.filter(function(x){return(!from||x.date>=from)&&(!to||x.date<=to);}),'date','total');
+  mkChart('rpt-chart-receipt','bar',{labels:months.map(function(m){return m.label;}),datasets:[{label:'Receipt (₹)',data:months.map(function(m){return rByM[m.key]||0;}),backgroundColor:'rgba(37,99,235,.75)',borderRadius:5}]});
+  mkChart('rpt-chart-supply','bar',{labels:months.map(function(m){return m.label;}),datasets:[{label:'Supply (₹)',data:months.map(function(m){return ssByM[m.key]||0;}),backgroundColor:'rgba(217,119,6,.75)',borderRadius:5}]});
+  var topItems=cache.inventory.slice().sort(function(a,b){return b.stock*b.price-a.stock*a.price;}).slice(0,10);
+  mkChart('rpt-chart-topitems','bar',{labels:topItems.map(function(i){return i.name;}),datasets:[{label:'Stock Value',data:topItems.map(function(i){return r2(i.stock*i.price);}),backgroundColor:'rgba(124,58,237,.75)',borderRadius:5}]},{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},color:'#94a3b8'},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:10},color:'#475569',maxRotation:0},grid:{color:'#f1f5f9'}}}});
+  var cgstTotal=0,igstTotal=0;all.forEach(function(x){if(x.type==='Receipt'||x.type==='Supply'){cache.receipts.concat(cache.supply).forEach(function(d){if(d.no===x.no){if(d.gstType==='IGST')igstTotal+=d.gstAmt;else cgstTotal+=d.gstAmt;}});}});
+  mkChart('rpt-chart-gst','doughnut',{labels:['CGST+SGST','IGST'],datasets:[{data:[r2(cgstTotal),r2(igstTotal)],backgroundColor:['rgba(37,99,235,.8)','rgba(217,119,6,.8)'],borderWidth:2,borderColor:'#fff'}]});
+}
+function mkSummaryCard(title,val,color,sub,hex){return'<div class="stat-card"><div class="stat-stripe '+color+'"></div><div class="stat-label">'+title+'</div><div class="stat-val" style="font-size:22px;color:'+hex+'">'+val+'</div><div class="stat-sub">'+sub+'</div></div>';}
+function exportReportCSV(){
+  var tbody=document.getElementById('rpt-table');var rows=[['DOC NO','DATE','TYPE','PARTY','ITEMS','TAXABLE','GST','TOTAL']];
+  tbody.querySelectorAll('tr').forEach(function(tr){rows.push([].slice.call(tr.querySelectorAll('td')).map(function(td){return'"'+td.innerText.trim()+'"';}).join(','));});
+  csvDown(rows.map(function(r){return Array.isArray(r)?r.join(','):r;}).join('\n'),'report.csv');
+}
+
+// ── LEDGER ──
+function populateLedgerParties(){
+  var sg=document.getElementById('ldg-suppliers');var cg=document.getElementById('ldg-customers');if(!sg||!cg)return;
+  sg.innerHTML=cache.masters.filter(function(m){return m.type==='SUPPLIER';}).map(function(m){return'<option value="'+esc(m.name)+'">'+esc(m.name)+'</option>';}).join('');
+  cg.innerHTML=cache.masters.filter(function(m){return m.type==='CUSTOMER';}).map(function(m){return'<option value="'+esc(m.name)+'">'+esc(m.name)+'</option>';}).join('');
+}
+function runLedger(){
+  var party=document.getElementById('ldg-party').value;var from=document.getElementById('ldg-from').value;var to=document.getElementById('ldg-to').value;if(!party)return;
+  document.getElementById('ldg-title').textContent='Ledger: '+party;var entries=[];
+  cache.receipts.filter(function(r){return r.supplier===party&&(!from||r.date>=from)&&(!to||r.date<=to);}).forEach(function(r){entries.push({date:r.date,no:r.no,type:'Receipt',desc:'Goods Receipt from '+r.supplier,debit:r.total,credit:0});});
+  cache.supply.filter(function(s){return s.customer===party&&(!from||s.date>=from)&&(!to||s.date<=to);}).forEach(function(s){entries.push({date:s.date,no:s.no,type:'Supply',desc:'Supply to '+s.customer,debit:0,credit:s.total});});
+  cache.po.filter(function(p){return p.supplier===party&&(!from||p.date>=from)&&(!to||p.date<=to);}).forEach(function(p){entries.push({date:p.date,no:p.no,type:'PO',desc:'Purchase Order to '+p.supplier,debit:p.total,credit:0});});
+  entries.sort(function(a,b){return a.date<b.date?-1:1;});
+  var balance=0;var tbody=document.getElementById('ldg-table');
+  if(!entries.length){tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><h3>No transactions found</h3></div></td></tr>';document.getElementById('ldg-summary-bar').style.display='none';return;}
+  tbody.innerHTML=entries.map(function(e){balance+=e.debit-e.credit;var rowCls=e.debit>0?'ledger-row-dr':'ledger-row-cr';var tc={Receipt:'badge-blue',Supply:'badge-amber',PO:'badge-green'}[e.type]||'badge-blue';return'<tr class="'+rowCls+'"><td>'+fmtDate(e.date)+'</td><td><span class="badge '+tc+'">'+e.no+'</span></td><td>'+e.type+'</td><td>'+e.desc+'</td><td style="text-align:right;font-family:monospace;color:var(--green)">'+(e.debit>0?'₹'+fmt(e.debit):'')+'</td><td style="text-align:right;font-family:monospace;color:var(--amber)">'+(e.credit>0?'₹'+fmt(e.credit):'')+'</td><td style="text-align:right;font-family:monospace;font-weight:700;color:'+(balance>=0?'var(--accent)':'var(--red)')+'">₹'+fmt(Math.abs(balance))+(balance>=0?' Dr':' Cr')+'</td></tr>';}).join('');
+  var sb=document.getElementById('ldg-summary-bar');sb.style.display='flex';sb.style.gap='20px';sb.style.padding='10px 18px';sb.style.flexWrap='wrap';
+  var totDr=entries.reduce(function(s,e){return s+e.debit;},0);var totCr=entries.reduce(function(s,e){return s+e.credit;},0);var netBal=totDr-totCr;
+  sb.innerHTML='<strong>'+party+'</strong><span>Total Debit: <strong>₹'+fmt(totDr)+'</strong></span><span>Total Credit: <strong>₹'+fmt(totCr)+'</strong></span><span style="font-weight:700;color:'+(netBal>=0?'var(--accent)':'var(--red)')+'">Net Balance: ₹'+fmt(Math.abs(netBal))+(netBal>=0?' Dr':' Cr')+'</span>';
+}
+
+// ── CHART HELPERS ──
+function mkChart(id,type,data,extraOpts){
+  var canvas=document.getElementById(id);if(!canvas)return;
+  if(chartInstances[id]){try{chartInstances[id].destroy();}catch(e){}}
+  chartInstances[id]=new Chart(canvas,{type:type,data:data,options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Plus Jakarta Sans',size:11},color:'#475569'}}},scales:type==='doughnut'||type==='pie'?{}:{x:{ticks:{font:{size:10},color:'#94a3b8'},grid:{color:'#f1f5f9'}},y:{ticks:{font:{size:10},color:'#94a3b8'},grid:{color:'#f1f5f9'}}}},extraOpts||{})});
+}
+function getLast6Months(){
+  var months=[];var now=new Date();for(var i=5;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push({key:d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),label:d.toLocaleString('en-IN',{month:'short',year:'2-digit'})});}return months;
+}
+function getMonthRange(fromDate,toDate){
+  var months=[];if(!fromDate||!toDate)return getLast6Months();
+  var start=new Date(fromDate.slice(0,7)+'-01');var end=new Date(toDate.slice(0,7)+'-01');var cur=new Date(start);
+  while(cur<=end){months.push({key:cur.getFullYear()+'-'+String(cur.getMonth()+1).padStart(2,'0'),label:cur.toLocaleString('en-IN',{month:'short',year:'2-digit'})});cur.setMonth(cur.getMonth()+1);}return months;
+}
+function groupByMonth(arr,dateKey,valKey){var m={};arr.forEach(function(x){var k=(x[dateKey]||'').slice(0,7);if(k)m[k]=(m[k]||0)+x[valKey];});return m;}
+
+// ── PRODUCT LEDGER ──
+var _pldgData=[];
+function initProductLedger(){
+  var sel=document.getElementById('pldg-item');if(!sel)return;
+  sel.innerHTML='<option value="">-- Select Item --</option>'+cache.inventory.map(function(i){return'<option value="'+i.code+'">'+i.name+' ('+i.code+')</option>';}).join('');
+  var f=document.getElementById('pldg-from');var t=document.getElementById('pldg-to');
+  if(f&&!f.value)f.value=new Date().getFullYear()+'-01-01';if(t&&!t.value)t.value=today();
+}
+function runProductLedger(){
+  var code=document.getElementById('pldg-item').value;var from=document.getElementById('pldg-from').value;var to=document.getElementById('pldg-to').value;
+  if(!code){toast('Select an item first.','error');return;}var item=cache.inventory.find(function(i){return i.code===code;});if(!item)return;
+  document.getElementById('pldg-title').textContent='Product Ledger: '+item.name+' ('+item.code+')';var entries=[];
+  cache.receipts.filter(function(r){return(!from||r.date>=from)&&(!to||r.date<=to);}).forEach(function(r){r.items.forEach(function(it){if(it.item===code)entries.push({date:r.date,no:r.no,type:'Receipt',party:r.supplier,inQty:it.qty,outQty:0,rate:it.rate});});});
+  cache.supply.filter(function(s){return(!from||s.date>=from)&&(!to||s.date<=to);}).forEach(function(s){s.items.forEach(function(it){if(it.item===code)entries.push({date:s.date,no:s.no,type:'Supply',party:s.customer,inQty:0,outQty:it.qty,rate:it.rate});});});
+  entries.sort(function(a,b){return a.date<b.date?-1:1;});_pldgData=entries;
+  var tbody=document.getElementById('pldg-table');var sb=document.getElementById('pldg-summary-bar');
+  if(!entries.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><h3>No transactions in selected range</h3></div></td></tr>';sb.style.display='none';return;}
+  var balance=0,totIn=0,totOut=0,lastRate=item.price;
+  tbody.innerHTML=entries.map(function(e){balance+=e.inQty-e.outQty;totIn+=e.inQty;totOut+=e.outQty;if(e.rate)lastRate=e.rate;var value=r2(balance*lastRate);var tc=e.type==='Receipt'?'badge-blue':'badge-amber';var rowBg=e.inQty>0?'background:#f7fff9':'background:#fff7f7';var balColor=balance>0?'var(--accent)':'var(--red)';return'<tr style="'+rowBg+'"><td>'+fmtDate(e.date)+'</td><td><span class="badge '+tc+'">'+e.no+'</span></td><td>'+e.type+'</td><td>'+e.party+'</td><td style="text-align:right;font-family:monospace;color:var(--green);font-weight:700">'+(e.inQty>0?'+'+e.inQty:'—')+'</td><td style="text-align:right;font-family:monospace;color:var(--red);font-weight:700">'+(e.outQty>0?'-'+e.outQty:'—')+'</td><td style="text-align:right;font-family:monospace;font-weight:700;color:'+balColor+'">'+balance+' '+item.unit+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(lastRate)+'</td><td style="text-align:right;font-family:monospace;font-weight:600">₹'+fmt(value)+'</td></tr>';}).join('');
+  sb.style.display='flex';sb.innerHTML='<div class="pldg-stat"><div class="pldg-stat-label">ITEM</div><div class="pldg-stat-val" style="font-size:13px">'+item.name+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">TOTAL IN</div><div class="pldg-stat-val" style="color:var(--green)">+'+totIn+' '+item.unit+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">TOTAL OUT</div><div class="pldg-stat-val" style="color:var(--red)">-'+totOut+' '+item.unit+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">NET MOVEMENT</div><div class="pldg-stat-val">'+(totIn-totOut>=0?'+':'')+(totIn-totOut)+' '+item.unit+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">CURRENT STOCK</div><div class="pldg-stat-val" style="color:var(--accent)">'+item.stock+' '+item.unit+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">STOCK VALUE</div><div class="pldg-stat-val" style="color:var(--accent)">₹'+fmt(item.stock*item.price)+'</div></div>';
+}
+function exportProdLedgerCSV(){
+  if(!_pldgData.length){toast('Run the ledger first.','error');return;}
+  var code=document.getElementById('pldg-item').value;var item=cache.inventory.find(function(i){return i.code===code;});
+  var header='Date,Doc No.,Type,Party,IN (Qty),OUT (Qty),Balance Qty,Rate (Rs),Value (Rs)';var balance=0,lastRate=item?item.price:0;
+  var rows=_pldgData.map(function(e){balance+=e.inQty-e.outQty;if(e.rate)lastRate=e.rate;return[e.date,e.no,e.type,'"'+e.party+'"',e.inQty||'',e.outQty||'',balance,lastRate,r2(balance*lastRate)].join(',');});
+  csvDown(header+'\n'+rows.join('\n'),'product_ledger_'+code+'_'+today()+'.csv');toast('CSV exported!','success');
+}
+
+// ── PRINT ──
+function printSavedDoc(type,no){
+  var doc;if(type==='receipt')doc=cache.receipts.find(function(r){return r.no===no;});if(type==='supply')doc=cache.supply.find(function(s){return s.no===no;});if(type==='po')doc=cache.po.find(function(p){return p.no===no;});if(!doc)return;
+  document.getElementById('print-modal-title').textContent={receipt:'GRN',supply:'Delivery Order',po:'Purchase Order'}[type]+' — '+no;
+  document.getElementById('print-content').innerHTML=buildPrintHTML(type,doc);openModal('modal-print');
+}
+function printCurrentDoc(type){
+  var pfx={receipt:'r',supply:'s',po:'p'}[type];var tId={receipt:'receipt-items',supply:'supply-items',po:'po-items'}[type];var items=getModalItems(tId);var t=calcItemsTotal(items);
+  var doc={no:document.getElementById(pfx+'-no').value,date:document.getElementById(pfx+'-date').value,supplier:type!=='supply'?(document.getElementById(pfx+'-supplier').value||''):'',customer:type==='supply'?(document.getElementById('s-customer').value||''):'',delivery:type==='po'?(document.getElementById('p-delivery').value||''):'',invoice:type==='receipt'?(document.getElementById('r-invoice').value||''):'',gstType:gstMode[type],items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total};
+  document.getElementById('print-modal-title').textContent={receipt:'GRN',supply:'Delivery Order',po:'Purchase Order'}[type]+' Preview';document.getElementById('print-content').innerHTML=buildPrintHTML(type,doc);openModal('modal-print');
+}
+function buildPrintHTML(type,doc){
+  var typeLabel={receipt:'GOODS RECEIPT NOTE',supply:'DELIVERY ORDER',po:'PURCHASE ORDER'}[type];var party=type==='supply'?doc.customer:doc.supplier;var partyLabel=type==='supply'?'CUSTOMER':'SUPPLIER';var mode=doc.gstType||'CGST_SGST';var cgst=mode==='IGST'?0:r2((doc.gstAmt||0)/2);var igst=mode==='IGST'?(doc.gstAmt||0):0;
+  var pm=cache.masters.find(function(m){return m.name===party;});var partyGst=pm?pm.gstNo:'';var partyAddr=pm?pm.address:'';var partyPhone=pm?pm.phone:'';var partyContact=pm?pm.contactPerson:'';
+  var gstBadge=mode==='IGST'?'<span style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700;font-family:monospace">IGST — INTER-STATE</span>':'<span style="background:#eff4ff;color:#2563eb;border:1px solid #bfdbfe;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700;font-family:monospace">CGST + SGST — INTRA-STATE</span>';
+  var rows=(doc.items||[]).map(function(it,i){var taxable=r2((it.qty||0)*(it.rate||0));var gstAmt=r2(taxable*(it.gst||0)/100);return'<tr style="border-bottom:1px solid #e5e7eb"><td style="padding:7px 9px;color:#6b7280;font-size:11px">'+(i+1)+'</td><td style="padding:7px 9px;font-size:9px;color:#7c3aed;font-family:monospace">'+(it.itemType||'')+'</td><td style="padding:7px 9px;font-weight:600">'+(it.name||it.item)+'</td><td style="padding:7px 9px;text-align:right">'+it.qty+'</td><td style="padding:7px 9px">'+it.unit+'</td><td style="padding:7px 9px;text-align:right;font-family:monospace">₹'+fmt(it.rate)+'</td><td style="padding:7px 9px;text-align:right;font-family:monospace">₹'+fmt(taxable)+'</td><td style="padding:7px 9px;text-align:center;color:#d97706">'+it.gst+'%</td><td style="padding:7px 9px;text-align:right;font-family:monospace;color:#d97706">₹'+fmt(gstAmt)+'</td><td style="padding:7px 9px;text-align:right;font-family:monospace;font-weight:700">₹'+fmt(taxable+gstAmt)+'</td></tr>';}).join('');
+  var gstSection=mode==='IGST'?'<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#d97706"><span>IGST</span><span style="font-family:monospace;font-weight:600">₹'+fmt(igst)+'</span></div>':'<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#64748b"><span>CGST</span><span style="font-family:monospace">₹'+fmt(cgst)+'</span></div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#64748b"><span>SGST</span><span style="font-family:monospace">₹'+fmt(cgst)+'</span></div>';
+  return`<div style="background:#fff;border-radius:10px;padding:28px;font-family:'Plus Jakarta Sans',sans-serif;color:#111;box-shadow:0 2px 12px rgba(0,0,0,.08);max-width:740px;margin:0 auto"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:2.5px solid #2563eb;margin-bottom:20px"><div style="display:flex;align-items:center;gap:14px"><img src="${COMPANY.logo}" style="height:52px;width:auto" onerror="this.style.display='none'" alt="Logo"><div><div style="font-size:16px;font-weight:800;color:#0f172a">${COMPANY.name}</div><div style="font-size:10px;color:#64748b;margin-top:2px">${COMPANY.addr1}, ${COMPANY.addr2}</div><div style="font-size:10px;color:#64748b">GSTIN: ${COMPANY.gstin} &nbsp;|&nbsp; DL: ${COMPANY.dl}</div><div style="margin-top:8px;display:flex;gap:6px;align-items:center"><span style="background:#eff4ff;color:#2563eb;border:1px solid #bfdbfe;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700">`+typeLabel+`</span>`+gstBadge+`</div></div></div><div style="text-align:right;font-size:12px;color:#6b7280;line-height:2"><div style="font-size:20px;font-weight:800;font-family:monospace;color:#0f172a">`+(doc.no||'')+`</div><div>Date: <strong>`+fmtDate(doc.date)+`</strong></div>`+(doc.invoice?'<div>Invoice: <strong>'+doc.invoice+'</strong></div>':'')+`</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px"><div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:13px"><div style="font-size:8px;color:#94a3b8;letter-spacing:2px;font-family:monospace;margin-bottom:6px">FROM / COMPANY</div><div style="font-weight:700;font-size:13px">${COMPANY.name}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${COMPANY.addr1}, ${COMPANY.addr2}</div><div style="font-size:11px;color:#64748b;margin-top:3px">GSTIN: ${COMPANY.gstin}</div></div><div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:13px"><div style="font-size:8px;color:#94a3b8;letter-spacing:2px;font-family:monospace;margin-bottom:6px">`+partyLabel+`</div><div style="font-weight:700;font-size:13px">`+(party||'—')+`</div>`+(partyGst?'<div style="font-size:11px;color:#64748b;margin-top:2px">GSTIN: '+partyGst+'</div>':'')+(partyAddr?'<div style="font-size:11px;color:#64748b">'+partyAddr+'</div>':'')+(partyPhone?'<div style="font-size:11px;color:#64748b">Ph: '+partyPhone+'</div>':'')+(partyContact?'<div style="font-size:11px;color:#64748b">Contact: '+partyContact+'</div>':'')+`</div></div><table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px"><thead><tr style="background:#0f172a;color:#fff"><th style="padding:9px;font-family:monospace;font-size:8px">#</th><th style="padding:9px;font-family:monospace;font-size:8px">TYPE</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:left">ITEM</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">QTY</th><th style="padding:9px;font-family:monospace;font-size:8px">UNIT</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">RATE</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">TAXABLE</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:center">GST%</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">GST AMT</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">TOTAL</th></tr></thead><tbody>`+rows+`</tbody></table><div style="display:flex;justify-content:flex-end;margin-bottom:20px"><div style="min-width:280px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 18px"><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#64748b;border-bottom:1px solid #e5e7eb;margin-bottom:6px"><span>Subtotal (Taxable)</span><span style="font-family:monospace;font-weight:600">₹`+fmt(doc.subtotal||0)+`</span></div>`+gstSection+`<div style="display:flex;justify-content:space-between;padding:10px 0 4px;font-size:16px;font-weight:800;border-top:2px solid #0f172a;margin-top:6px"><span>GRAND TOTAL</span><span style="font-family:monospace;color:#2563eb">₹`+fmt(doc.total||0)+`</span></div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:28px;padding-top:16px;border-top:1px solid #e2e8f0"><div style="text-align:center;font-size:10px;color:#94a3b8"><div style="height:36px"></div><div style="border-top:1px solid #cbd5e1;padding-top:6px">Prepared By</div></div><div style="text-align:center;font-size:10px;color:#94a3b8"><div style="height:36px"></div><div style="border-top:1px solid #cbd5e1;padding-top:6px">Authorized Signatory</div></div><div style="text-align:center;font-size:10px;color:#94a3b8"><div style="height:36px"></div><div style="border-top:1px solid #cbd5e1;padding-top:6px">`+(type==='po'?'Supplier Acceptance':'Received By')+`</div></div></div><div style="margin-top:16px;padding-top:12px;border-top:1px dashed #cbd5e1;font-size:9px;color:#94a3b8;text-align:center">${COMPANY.name} &nbsp;|&nbsp; GSTIN: ${COMPANY.gstin} &nbsp;|&nbsp; ${COMPANY.addr1}, ${COMPANY.addr2}</div></div>`;
+}
+
+// ── INIT ──
+document.getElementById('rpt-from')&&(document.getElementById('rpt-from').value=today().slice(0,7)+'-01');
+document.getElementById('rpt-to')&&(document.getElementById('rpt-to').value=today());
+loadAll();
+</script>
+</body>
+</html>
