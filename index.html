@@ -321,7 +321,7 @@ tr.row-out td{background:#fff5f5!important}
     <!-- SUPPLY -->
     <div class="page" id="page-supply">
       <div class="card">
-        <div class="card-header"><div class="card-title">Supply / Dispatch Orders</div><button class="btn btn-amber btn-sm" onclick="openNewSupply()">+ New Supply</button></div>
+        <div class="card-header"><div class="card-title">Supply / Delivery Challan</div><button class="btn btn-amber btn-sm" onclick="openNewSupply()">+ New Supply</button></div>
         <table><thead><tr><th>DO NO.</th><th>DATE</th><th>CUSTOMER</th><th>ITEMS</th><th>TAXABLE</th><th>GST TYPE</th><th>GST AMT</th><th>TOTAL</th><th>ACTIONS</th></tr></thead>
         <tbody id="supply-table"></tbody></table>
       </div>
@@ -616,19 +616,19 @@ function loadAll(){
       var f=g.rows[0];
       var items=g.rows.map(function(r){var qty=Number(r['QTY'])||0;var rate=Number(r['RATE'])||0;if(!rate&&qty)rate=r2(Number(r['TAXABLE']||0)/qty);return{item:String(r['CODE']||''),name:String(r['ITEM']||''),itemType:String(r['TYPE']||''),qty:qty,unit:String(r['UNIT']||'PCS'),rate:rate,gst:Number(r['GST %'])||0};});
       var t=calcItemsTotal(items);
-      return{no:g.id,date:fmtDateVal(f['DATE']),supplier:String(f['SUPPLIER']||''),invoice:String(f['INVOICE NO']||''),gstType:String(f['GST TYPE']||'CGST_SGST'),items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:'Received'};
+      return{no:g.id,date:fmtDateVal(f['DATE']),supplier:String(f['SUPPLIER']||''),invoice:String(f['INVOICE NO']||''),gstType:String(f['GST TYPE']||'CGST_SGST').trim().toUpperCase(),items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:'Received'};
     });
     cache.supply=buildDocCache(res.supply||[],'SUPPLY ID',function(g){
       var f=g.rows[0];
       var items=g.rows.map(function(r){var qty=Number(r['QTY'])||0;var rate=Number(r['RATE'])||0;if(!rate&&qty)rate=r2(Number(r['TAXABLE']||0)/qty);return{item:String(r['CODE']||''),name:String(r['ITEM']||''),itemType:String(r['TYPE']||''),qty:qty,unit:String(r['UNIT']||'PCS'),rate:rate,gst:Number(r['GST %'])||0};});
       var t=calcItemsTotal(items);
-      return{no:g.id,date:fmtDateVal(f['DATE']),customer:String(f['PARTY NAME']||''),gstType:String(f['GST TYPE']||'CGST_SGST'),items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:'Dispatched'};
+      return{no:g.id,date:fmtDateVal(f['DATE']),customer:String(f['PARTY NAME']||''),gstType:String(f['GST TYPE']||'CGST_SGST').trim().toUpperCase(),items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:'Dispatched'};
     });
     cache.po=buildDocCache(res.po||[],'PO ID',function(g){
       var f=g.rows[0];
       var items=g.rows.map(function(r){var qty=Number(r['QTY'])||0;var rate=Number(r['RATE'])||0;if(!rate&&qty)rate=r2(Number(r['TAXABLE']||0)/qty);return{item:String(r['CODE']||''),name:String(r['ITEM']||''),itemType:String(r['TYPE']||''),qty:qty,unit:String(r['UNIT']||'PCS'),rate:rate,gst:Number(r['GST %'])||0};});
       var t=calcItemsTotal(items);
-      return{no:g.id,date:fmtDateVal(f['DATE']),supplier:String(f['PARTY NAME']||''),delivery:fmtDateVal(f['ESTIMATED DELIVERY DATE']),gstType:String(f['GST TYPE']||'CGST_SGST'),items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:String(f['STATUS']||'Open')};
+      return{no:g.id,date:fmtDateVal(f['DATE']),supplier:String(f['PARTY NAME']||''),delivery:fmtDateVal(f['ESTIMATED DELIVERY DATE']),gstType:String(f['GST TYPE']||'CGST_SGST').trim().toUpperCase(),items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:String(f['STATUS']||'Open')};
     });
     cache.masters=(res.masters||[]).filter(function(r){
       var nr={};Object.keys(r).forEach(function(k){nr[k.trim()]=r[k];});return nr['CODE'];
@@ -1207,16 +1207,16 @@ function exportProdLedgerCSV(){
 // ── PRINT ──
 function printSavedDoc(type,no){
   var doc;if(type==='receipt')doc=cache.receipts.find(function(r){return r.no===no;});if(type==='supply')doc=cache.supply.find(function(s){return s.no===no;});if(type==='po')doc=cache.po.find(function(p){return p.no===no;});if(!doc)return;
-  document.getElementById('print-modal-title').textContent={receipt:'GRN',supply:'Delivery Order',po:'Purchase Order'}[type]+' — '+no;
+  document.getElementById('print-modal-title').textContent={receipt:'GRN',supply:'Delivery Challan',po:'Purchase Order'}[type]+' — '+no;
   document.getElementById('print-content').innerHTML=buildPrintHTML(type,doc);openModal('modal-print');
 }
 function printCurrentDoc(type){
   var pfx={receipt:'r',supply:'s',po:'p'}[type];var tId={receipt:'receipt-items',supply:'supply-items',po:'po-items'}[type];var items=getModalItems(tId);var t=calcItemsTotal(items);
   var doc={no:document.getElementById(pfx+'-no').value,date:document.getElementById(pfx+'-date').value,supplier:type!=='supply'?(document.getElementById(pfx+'-supplier').value||''):'',customer:type==='supply'?(document.getElementById('s-customer').value||''):'',delivery:type==='po'?(document.getElementById('p-delivery').value||''):'',invoice:type==='receipt'?(document.getElementById('r-invoice').value||''):'',gstType:gstMode[type],items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total};
-  document.getElementById('print-modal-title').textContent={receipt:'GRN',supply:'Delivery Order',po:'Purchase Order'}[type]+' Preview';document.getElementById('print-content').innerHTML=buildPrintHTML(type,doc);openModal('modal-print');
+  document.getElementById('print-modal-title').textContent={receipt:'GRN',supply:'Delivery Challan',po:'Purchase Order'}[type]+' Preview';document.getElementById('print-content').innerHTML=buildPrintHTML(type,doc);openModal('modal-print');
 }
 function buildPrintHTML(type,doc){
-  var typeLabel={receipt:'GOODS RECEIPT NOTE',supply:'DELIVERY ORDER',po:'PURCHASE ORDER'}[type];var party=type==='supply'?doc.customer:doc.supplier;var partyLabel=type==='supply'?'CUSTOMER':'SUPPLIER';var mode=doc.gstType||'CGST_SGST';var cgst=mode==='IGST'?0:r2((doc.gstAmt||0)/2);var igst=mode==='IGST'?(doc.gstAmt||0):0;
+  var typeLabel={receipt:'GOODS RECEIPT NOTE',supply:'DELIVERY CHALLAN',po:'PURCHASE ORDER'}[type];var party=type==='supply'?doc.customer:doc.supplier;var partyLabel=type==='supply'?'CUSTOMER':'SUPPLIER';var mode=doc.gstType||'CGST_SGST';var cgst=mode==='IGST'?0:r2((doc.gstAmt||0)/2);var igst=mode==='IGST'?(doc.gstAmt||0):0;
   var pm=cache.masters.find(function(m){return m.name===party;});var partyGst=pm?pm.gstNo:'';var partyAddr=pm?pm.address:'';var partyPhone=pm?pm.phone:'';var partyContact=pm?pm.contactPerson:'';
   var gstBadge=mode==='IGST'?'<span style="background:#fffbeb;color:#d97706;border:1px solid #fde68a;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700;font-family:monospace">IGST — INTER-STATE</span>':'<span style="background:#eff4ff;color:#2563eb;border:1px solid #bfdbfe;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700;font-family:monospace">CGST + SGST — INTRA-STATE</span>';
   var rows=(doc.items||[]).map(function(it,i){var taxable=r2((it.qty||0)*(it.rate||0));var gstAmt=r2(taxable*(it.gst||0)/100);return'<tr style="border-bottom:1px solid #e5e7eb"><td style="padding:7px 9px;color:#6b7280;font-size:11px">'+(i+1)+'</td><td style="padding:7px 9px;font-size:9px;color:#7c3aed;font-family:monospace">'+(it.itemType||'')+'</td><td style="padding:7px 9px;font-weight:600">'+(it.name||it.item)+'</td><td style="padding:7px 9px;text-align:right">'+it.qty+'</td><td style="padding:7px 9px">'+it.unit+'</td><td style="padding:7px 9px;text-align:right;font-family:monospace">₹'+fmt(it.rate)+'</td><td style="padding:7px 9px;text-align:right;font-family:monospace">₹'+fmt(taxable)+'</td><td style="padding:7px 9px;text-align:center;color:#d97706">'+it.gst+'%</td><td style="padding:7px 9px;text-align:right;font-family:monospace;color:#d97706">₹'+fmt(gstAmt)+'</td><td style="padding:7px 9px;text-align:right;font-family:monospace;font-weight:700">₹'+fmt(taxable+gstAmt)+'</td></tr>';}).join('');
