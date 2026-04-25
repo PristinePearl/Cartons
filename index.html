@@ -866,7 +866,7 @@ function saveReceipt(){
 }
 function renderReceipts(){
   var tbody=document.getElementById('receipts-table');if(!cache.receipts.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><h3>No receipts yet</h3></div></td></tr>';return;}
-  tbody.innerHTML=[].concat(cache.receipts).reverse().map(function(r){var gt=r.gstType==='IGST'?'<span class="igst-badge">IGST</span>':'<span class="cgst-badge">CGST+SGST</span>';return'<tr><td><span class="badge badge-blue">'+r.no+'</span></td><td>'+fmtDate(r.date)+'</td><td><strong>'+r.supplier+'</strong></td><td>'+r.items.length+' item(s)</td><td style="font-family:monospace">₹'+fmt(r.subtotal)+'</td><td>'+gt+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(r.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(r.total)+'</td><td><button class="btn btn-ghost btn-sm" onclick="printSavedDoc(\'receipt\',\''+r.no+'\')">Print</button></td></tr>';}).join('');
+  tbody.innerHTML=[].concat(cache.receipts).reverse().map(function(r){var gt=r.gstType==='IGST'?'<span class="igst-badge">IGST</span>':'<span class="cgst-badge">CGST+SGST</span>';return'<tr><td><span class="badge badge-blue">'+r.no+'</span></td><td>'+fmtDate(r.date)+'</td><td><strong>'+r.supplier+'</strong></td><td>'+r.items.length+' item(s)</td><td style="font-family:monospace">₹'+fmt(r.subtotal)+'</td><td>'+gt+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(r.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(r.total)+'</td><td style="display:flex;gap:5px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="printSavedDoc(\'receipt\',\''+r.no+'\')">Print</button><button class="btn btn-cyan btn-sm" onclick="editDoc(\'receipt\',\''+r.no+'\')">Edit</button><button class="btn btn-red btn-sm" onclick="deleteDoc(\'receipt\',\''+r.no+'\')">Delete</button></td></tr>';}).join('');
 }
 function openNewSupply(){
   document.getElementById('s-no').value=genNo('DO-',counters.do);document.getElementById('s-date').value=today();
@@ -891,7 +891,7 @@ function saveSupply(){
 }
 function renderSupply(){
   var tbody=document.getElementById('supply-table');if(!cache.supply.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><h3>No supply orders</h3></div></td></tr>';return;}
-  tbody.innerHTML=[].concat(cache.supply).reverse().map(function(s){var gt=s.gstType==='IGST'?'<span class="igst-badge">IGST</span>':'<span class="cgst-badge">CGST+SGST</span>';return'<tr><td><span class="badge badge-amber">'+s.no+'</span></td><td>'+fmtDate(s.date)+'</td><td><strong>'+s.customer+'</strong></td><td>'+s.items.length+' item(s)</td><td style="font-family:monospace">₹'+fmt(s.subtotal)+'</td><td>'+gt+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(s.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(s.total)+'</td><td><button class="btn btn-ghost btn-sm" onclick="printSavedDoc(\'supply\',\''+s.no+'\')">Print</button></td></tr>';}).join('');
+  tbody.innerHTML=[].concat(cache.supply).reverse().map(function(s){var gt=s.gstType==='IGST'?'<span class="igst-badge">IGST</span>':'<span class="cgst-badge">CGST+SGST</span>';return'<tr><td><span class="badge badge-amber">'+s.no+'</span></td><td>'+fmtDate(s.date)+'</td><td><strong>'+s.customer+'</strong></td><td>'+s.items.length+' item(s)</td><td style="font-family:monospace">₹'+fmt(s.subtotal)+'</td><td>'+gt+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(s.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(s.total)+'</td><td style="display:flex;gap:5px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="printSavedDoc(\'supply\',\''+s.no+'\')">Print</button><button class="btn btn-cyan btn-sm" onclick="editDoc(\'supply\',\''+s.no+'\')">Edit</button><button class="btn btn-red btn-sm" onclick="deleteDoc(\'supply\',\''+s.no+'\')">Delete</button></td></tr>';}).join('');
 }
 function openNewPO(){
   document.getElementById('p-no').value=genNo('PO-',counters.po);document.getElementById('p-date').value=today();
@@ -918,7 +918,7 @@ function renderPO(){
   var tbody=document.getElementById('po-table');if(!cache.po.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><h3>No purchase orders</h3></div></td></tr>';return;}
   tbody.innerHTML=[].concat(cache.po).reverse().map(function(p){
     var gt=p.gstType==='IGST'?'<span class="igst-badge">IGST</span>':'<span class="cgst-badge">CGST+SGST</span>';var isOpen=p.status==='Open';
-    return'<tr><td><span class="badge badge-green">'+p.no+'</span></td><td>'+fmtDate(p.date)+'</td><td><strong>'+p.supplier+'</strong></td><td>'+p.items.length+' item(s)</td><td style="font-family:monospace">₹'+fmt(p.subtotal)+'</td><td>'+gt+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(p.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(p.total)+'</td><td style="color:var(--text3)">'+fmtDate(p.delivery)+'</td><td><span class="badge '+(isOpen?'badge-amber':'badge-green')+'">'+p.status+'</span></td><td style="display:flex;gap:5px;flex-wrap:wrap">'+(isOpen?'<button class="btn btn-primary btn-sm" onclick="convertPOtoReceipt(\''+p.no+'\')">→ GRN</button>':'')+'<button class="btn btn-ghost btn-sm" onclick="printSavedDoc(\'po\',\''+p.no+'\')">Print</button></td></tr>';
+    return'<tr><td><span class="badge badge-green">'+p.no+'</span></td><td>'+fmtDate(p.date)+'</td><td><strong>'+p.supplier+'</strong></td><td>'+p.items.length+' item(s)</td><td style="font-family:monospace">₹'+fmt(p.subtotal)+'</td><td>'+gt+'</td><td style="font-family:monospace;color:var(--amber)">₹'+fmt(p.gstAmt)+'</td><td style="font-family:monospace;font-weight:700">₹'+fmt(p.total)+'</td><td style="color:var(--text3)">'+fmtDate(p.delivery)+'</td><td><span class="badge '+(isOpen?'badge-amber':'badge-green')+'">'+p.status+'</span></td><td style="display:flex;gap:5px;flex-wrap:wrap">'+(isOpen?'<button class="btn btn-primary btn-sm" onclick="convertPOtoReceipt(\''+p.no+'\')">→ GRN</button>':'')+'<button class="btn btn-ghost btn-sm" onclick="printSavedDoc(\'po\',\''+p.no+'\')">Print</button><button class="btn btn-cyan btn-sm" onclick="editDoc(\'po\',\''+p.no+'\')">Edit</button><button class="btn btn-red btn-sm" onclick="deleteDoc(\'po\',\''+p.no+'\')">Delete</button></td></tr>';
   }).join('');
 }
 function convertPOtoReceipt(poNo){var po=cache.po.find(function(p){return p.no===poNo;});if(!po)return;closeModal('modal-po');openNewReceipt(po);toast('PO '+poNo+' loaded.','info');}
@@ -1223,7 +1223,126 @@ function buildPrintHTML(type,doc){
   var gstSection=mode==='IGST'?'<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#d97706"><span>IGST</span><span style="font-family:monospace;font-weight:600">₹'+fmt(igst)+'</span></div>':'<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#64748b"><span>CGST</span><span style="font-family:monospace">₹'+fmt(cgst)+'</span></div><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#64748b"><span>SGST</span><span style="font-family:monospace">₹'+fmt(cgst)+'</span></div>';
   return`<div style="background:#fff;border-radius:10px;padding:28px;font-family:'Plus Jakarta Sans',sans-serif;color:#111;box-shadow:0 2px 12px rgba(0,0,0,.08);max-width:740px;margin:0 auto"><div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:2.5px solid #2563eb;margin-bottom:20px"><div style="display:flex;align-items:center;gap:14px"><img src="${COMPANY.logo}" style="height:52px;width:auto" onerror="this.style.display='none'" alt="Logo"><div><div style="font-size:16px;font-weight:800;color:#0f172a">${COMPANY.name}</div><div style="font-size:10px;color:#64748b;margin-top:2px">${COMPANY.addr1}, ${COMPANY.addr2}</div><div style="font-size:10px;color:#64748b">GSTIN: ${COMPANY.gstin} &nbsp;|&nbsp; DL: ${COMPANY.dl}</div><div style="margin-top:8px;display:flex;gap:6px;align-items:center"><span style="background:#eff4ff;color:#2563eb;border:1px solid #bfdbfe;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700">`+typeLabel+`</span>`+gstBadge+`</div></div></div><div style="text-align:right;font-size:12px;color:#6b7280;line-height:2"><div style="font-size:20px;font-weight:800;font-family:monospace;color:#0f172a">`+(doc.no||'')+`</div><div>Date: <strong>`+fmtDate(doc.date)+`</strong></div>`+(doc.invoice?'<div>Invoice: <strong>'+doc.invoice+'</strong></div>':'')+`</div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px"><div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:13px"><div style="font-size:8px;color:#94a3b8;letter-spacing:2px;font-family:monospace;margin-bottom:6px">FROM / COMPANY</div><div style="font-weight:700;font-size:13px">${COMPANY.name}</div><div style="font-size:11px;color:#64748b;margin-top:2px">${COMPANY.addr1}, ${COMPANY.addr2}</div><div style="font-size:11px;color:#64748b;margin-top:3px">GSTIN: ${COMPANY.gstin}</div></div><div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:13px"><div style="font-size:8px;color:#94a3b8;letter-spacing:2px;font-family:monospace;margin-bottom:6px">`+partyLabel+`</div><div style="font-weight:700;font-size:13px">`+(party||'—')+`</div>`+(partyGst?'<div style="font-size:11px;color:#64748b;margin-top:2px">GSTIN: '+partyGst+'</div>':'')+(partyAddr?'<div style="font-size:11px;color:#64748b">'+partyAddr+'</div>':'')+(partyPhone?'<div style="font-size:11px;color:#64748b">Ph: '+partyPhone+'</div>':'')+(partyContact?'<div style="font-size:11px;color:#64748b">Contact: '+partyContact+'</div>':'')+`</div></div><table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:12px"><thead><tr style="background:#0f172a;color:#fff"><th style="padding:9px;font-family:monospace;font-size:8px">#</th><th style="padding:9px;font-family:monospace;font-size:8px">TYPE</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:left">ITEM</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">QTY</th><th style="padding:9px;font-family:monospace;font-size:8px">UNIT</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">RATE</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">TAXABLE</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:center">GST%</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">GST AMT</th><th style="padding:9px;font-family:monospace;font-size:8px;text-align:right">TOTAL</th></tr></thead><tbody>`+rows+`</tbody></table><div style="display:flex;justify-content:flex-end;margin-bottom:20px"><div style="min-width:280px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 18px"><div style="display:flex;justify-content:space-between;padding:4px 0;font-size:12px;color:#64748b;border-bottom:1px solid #e5e7eb;margin-bottom:6px"><span>Subtotal (Taxable)</span><span style="font-family:monospace;font-weight:600">₹`+fmt(doc.subtotal||0)+`</span></div>`+gstSection+`<div style="display:flex;justify-content:space-between;padding:10px 0 4px;font-size:16px;font-weight:800;border-top:2px solid #0f172a;margin-top:6px"><span>GRAND TOTAL</span><span style="font-family:monospace;color:#2563eb">₹`+fmt(doc.total||0)+`</span></div></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:28px;padding-top:16px;border-top:1px solid #e2e8f0"><div style="text-align:center;font-size:10px;color:#94a3b8"><div style="height:36px"></div><div style="border-top:1px solid #cbd5e1;padding-top:6px">Prepared By</div></div><div style="text-align:center;font-size:10px;color:#94a3b8"><div style="height:36px"></div><div style="border-top:1px solid #cbd5e1;padding-top:6px">Authorized Signatory</div></div><div style="text-align:center;font-size:10px;color:#94a3b8"><div style="height:36px"></div><div style="border-top:1px solid #cbd5e1;padding-top:6px">`+(type==='po'?'Supplier Acceptance':'Received By')+`</div></div></div><div style="margin-top:16px;padding-top:12px;border-top:1px dashed #cbd5e1;font-size:9px;color:#94a3b8;text-align:center">${COMPANY.name} &nbsp;|&nbsp; GSTIN: ${COMPANY.gstin} &nbsp;|&nbsp; ${COMPANY.addr1}, ${COMPANY.addr2}</div></div>`;
 }
+// ── EDIT / DELETE DOCS ──
+function deleteDoc(type,no){
+  var label={receipt:'GRN',supply:'Supply Order',po:'Purchase Order'}[type];
+  if(!confirm('Delete '+label+' '+no+'? This will reverse the stock changes.'))return;
+  showLoading('Deleting...');
+  apiPost({action:'deleteDoc',doc:{type:type,no:no}}).then(function(res){
+    hideLoading();
+    if(res.status!=='ok'){toast('Error: '+(res.message||'failed'),'error');return;}
+    loadAll();toast(label+' '+no+' deleted!','info');
+  }).catch(function(e){hideLoading();toast('Error: '+e.message,'error');});
+}
 
+function editDoc(type,no){
+  if(type==='receipt'){
+    var doc=cache.receipts.find(function(r){return r.no===no;});if(!doc)return;
+    document.getElementById('r-no').value=doc.no;
+    document.getElementById('r-date').value=doc.date;
+    document.getElementById('r-supplier').value=doc.supplier;
+    document.getElementById('r-sup-gst').value='';
+    document.getElementById('r-invoice').value=doc.invoice||'';
+    document.getElementById('r-notes').value=doc.notes||'';
+    var pb=document.getElementById('r-party-bar');if(pb)pb.classList.remove('show');
+    var sel=document.getElementById('r-ref-po');
+    sel.innerHTML='<option value="">-- None --</option>'+cache.po.filter(function(p){return p.status==='Open';}).map(function(p){return'<option value="'+p.no+'">'+p.no+' — '+p.supplier+'</option>';}).join('');
+    document.getElementById('receipt-items').innerHTML='';
+    setGSTType('receipt',doc.gstType||'CGST_SGST');
+    doc.items.forEach(function(it){addReceiptRow(it);});
+    calcTotals('receipt');
+    document.getElementById('save-receipt-btn').textContent='Update & Adjust Stock';
+    document.getElementById('save-receipt-btn').onclick=function(){updateDoc('receipt',no);};
+    openModal('modal-receipt');
+  }
+  else if(type==='supply'){
+    var doc=cache.supply.find(function(s){return s.no===no;});if(!doc)return;
+    document.getElementById('s-no').value=doc.no;
+    document.getElementById('s-date').value=doc.date;
+    document.getElementById('s-customer').value=doc.customer;
+    document.getElementById('s-cust-gst').value='';
+    document.getElementById('s-address').value=doc.address||'';
+    document.getElementById('s-cust-po').value=doc.custPO||'';
+    var pb=document.getElementById('s-party-bar');if(pb)pb.classList.remove('show');
+    document.getElementById('supply-items').innerHTML='';
+    setGSTType('supply',doc.gstType||'CGST_SGST');
+    doc.items.forEach(function(it){addSupplyRow();
+      var rows=document.querySelectorAll('#supply-items tr');
+      var tr=rows[rows.length-1];
+      var s=tr.querySelector('.item-sel');
+      for(var o of s.options)if(o.value===it.item){s.value=it.item;break;}
+      tr.querySelector('.qty').value=it.qty;
+      tr.querySelector('.rate').value=it.rate;
+      tr.querySelector('.unit').value=it.unit;
+      tr.querySelector('.gst-sel').value=String(it.gst||18);
+      updateAvail(tr);
+    });
+    calcTotals('supply');
+    document.getElementById('save-supply-btn').textContent='Update & Adjust Stock';
+    document.getElementById('save-supply-btn').onclick=function(){updateDoc('supply',no);};
+    openModal('modal-supply');
+  }
+  else if(type==='po'){
+    var doc=cache.po.find(function(p){return p.no===no;});if(!doc)return;
+    document.getElementById('p-no').value=doc.no;
+    document.getElementById('p-date').value=doc.date;
+    document.getElementById('p-supplier').value=doc.supplier;
+    document.getElementById('p-sup-gst').value='';
+    document.getElementById('p-delivery').value=doc.delivery||'';
+    document.getElementById('p-address').value=doc.address||'';
+    document.getElementById('p-terms').value=doc.terms||'';
+    var pb=document.getElementById('p-party-bar');if(pb)pb.classList.remove('show');
+    document.getElementById('po-items').innerHTML='';
+    setGSTType('po',doc.gstType||'CGST_SGST');
+    doc.items.forEach(function(it){addPORow();
+      var rows=document.querySelectorAll('#po-items tr');
+      var tr=rows[rows.length-1];
+      var s=tr.querySelector('.item-sel');
+      for(var o of s.options)if(o.value===it.item){s.value=it.item;break;}
+      tr.querySelector('.qty').value=it.qty;
+      tr.querySelector('.rate').value=it.rate;
+      tr.querySelector('.unit').value=it.unit;
+      tr.querySelector('.gst-sel').value=String(it.gst||18);
+    });
+    calcTotals('po');
+    document.getElementById('save-po-btn').textContent='Update Purchase Order';
+    document.getElementById('save-po-btn').onclick=function(){updateDoc('po',no);};
+    openModal('modal-po');
+  }
+}
+
+function updateDoc(type,oldNo){
+  var doc,btn;
+  if(type==='receipt'){
+    var supplier=document.getElementById('r-supplier').value.trim();if(!supplier){toast('Supplier required.','error');return;}
+    var items=getModalItems('receipt-items');if(!items.length){toast('Add at least one item.','error');return;}
+    var t=calcItemsTotal(items);
+    doc={no:oldNo,date:document.getElementById('r-date').value,supplier:supplier,supGst:document.getElementById('r-sup-gst').value,invoice:document.getElementById('r-invoice').value,gstType:gstMode.receipt,items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,notes:document.getElementById('r-notes').value};
+    btn=document.getElementById('save-receipt-btn');
+  } else if(type==='supply'){
+    var customer=document.getElementById('s-customer').value.trim();if(!customer){toast('Customer required.','error');return;}
+    var items=getModalItems('supply-items');if(!items.length){toast('Add at least one item.','error');return;}
+    var t=calcItemsTotal(items);
+    doc={no:oldNo,date:document.getElementById('s-date').value,customer:customer,custGst:document.getElementById('s-cust-gst').value,address:document.getElementById('s-address').value,custPO:document.getElementById('s-cust-po').value,gstType:gstMode.supply,items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total};
+    btn=document.getElementById('save-supply-btn');
+  } else if(type==='po'){
+    var supplier=document.getElementById('p-supplier').value.trim();if(!supplier){toast('Supplier required.','error');return;}
+    var items=getModalItems('po-items');if(!items.length){toast('Add at least one item.','error');return;}
+    var t=calcItemsTotal(items);
+    doc={no:oldNo,date:document.getElementById('p-date').value,supplier:supplier,supGst:document.getElementById('p-sup-gst').value,delivery:document.getElementById('p-delivery').value,payment:document.getElementById('p-payment')?document.getElementById('p-payment').value:'',address:document.getElementById('p-address').value,terms:document.getElementById('p-terms').value,gstType:gstMode.po,items:items,subtotal:t.sub,gstAmt:t.gst,total:t.total,status:'Open'};
+    btn=document.getElementById('save-po-btn');
+  }
+  btn.disabled=true;showLoading('Updating...');
+  apiPost({action:'updateDoc',doc:{type:type,doc:doc}}).then(function(res){
+    hideLoading();btn.disabled=false;
+    if(res.status!=='ok'){toast('Error: '+(res.message||'failed'),'error');return;}
+    // Reset button back to original
+    if(type==='receipt'){btn.textContent='Save & Update Stock';btn.onclick=saveReceipt;closeModal('modal-receipt');}
+    if(type==='supply'){btn.textContent='Save & Dispatch';btn.onclick=saveSupply;closeModal('modal-supply');}
+    if(type==='po'){btn.textContent='Issue Purchase Order';btn.onclick=savePO;closeModal('modal-po');}
+    loadAll();toast(oldNo+' updated!','success');
+  }).catch(function(e){hideLoading();btn.disabled=false;toast('Error: '+e.message,'error');});
+}
 // ── INIT ──
 document.getElementById('rpt-from')&&(document.getElementById('rpt-from').value=today().slice(0,7)+'-01');
 document.getElementById('rpt-to')&&(document.getElementById('rpt-to').value=today());
