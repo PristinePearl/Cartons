@@ -318,6 +318,26 @@ tr.row-out td{background:#fff5f5!important}
 
     <!-- INVENTORY -->
     <div class="page" id="page-inventory">
+      <div id="inv-value-banner" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:linear-gradient(135deg,#2563eb,#7c3aed);border-radius:14px;padding:16px 22px;margin-bottom:14px;box-shadow:var(--shadow)">
+        <div>
+          <div style="font-size:9px;color:rgba(255,255,255,.65);font-family:'JetBrains Mono',monospace;letter-spacing:1.5px;text-transform:uppercase">Total Inventory Value</div>
+          <div id="inv-total-value" style="font-size:28px;font-weight:800;color:#fff;margin-top:3px;line-height:1;font-family:'JetBrains Mono',monospace">₹0.00</div>
+        </div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap">
+          <div style="text-align:right">
+            <div style="font-size:9px;color:rgba(255,255,255,.55);font-family:'JetBrains Mono',monospace;letter-spacing:1px">SKUs</div>
+            <div id="inv-total-skus" style="font-size:18px;font-weight:700;color:#fff">0</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:9px;color:rgba(255,255,255,.55);font-family:'JetBrains Mono',monospace;letter-spacing:1px">In Stock</div>
+            <div id="inv-total-instock" style="font-size:18px;font-weight:700;color:#fff">0</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:9px;color:rgba(255,255,255,.55);font-family:'JetBrains Mono',monospace;letter-spacing:1px">Low / Out</div>
+            <div id="inv-total-low" style="font-size:18px;font-weight:700;color:rgba(255,200,100,1)">0</div>
+          </div>
+        </div>
+      </div>
       <div class="card">
         <div class="card-header"><div class="card-title">Inventory Master</div><div class="card-actions"><div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="inv-search" placeholder="Search items..." oninput="filterInventory(this.value)"></div><label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);cursor:pointer"><input type="checkbox" id="inv-show-zero" onchange="filterInventory(document.getElementById('inv-search').value)" style="width:14px;height:14px;cursor:pointer">Show zero stock</label><button class="btn btn-primary btn-sm" onclick="openAddItemModal()">+ Add Item</button></div></div>
         <table><thead><tr><th>TYPE</th><th>CODE</th><th>ITEM</th><th>MFR</th><th>STOCK QTY</th><th>UNIT</th><th>RATE (&#8377;)</th><th>GST %</th><th>STOCK VALUE</th><th>STATUS</th><th>ACTION</th></tr></thead>
@@ -423,6 +443,7 @@ tr.row-out td{background:#fff5f5!important}
         <button class="btn btn-primary btn-sm" onclick="runReport()">Run Report</button>
         <button class="btn btn-ghost btn-sm" onclick="window.print()">&#128438; Print</button>
       </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px" id="rpt-summary-cards"></div>
       <div class="reports-grid">
         <div class="chart-card"><div class="chart-title">Receipt Value by Month</div><div class="chart-wrap"><canvas id="rpt-chart-receipt"></canvas></div></div>
         <div class="chart-card"><div class="chart-title">Supply Value by Month</div><div class="chart-wrap"><canvas id="rpt-chart-supply"></canvas></div></div>
@@ -434,7 +455,6 @@ tr.row-out td{background:#fff5f5!important}
         <table><thead><tr><th>DOC NO.</th><th>DATE</th><th>TYPE</th><th>PARTY</th><th>ITEMS</th><th>TAXABLE</th><th>GST</th><th>TOTAL</th></tr></thead>
         <tbody id="rpt-table"></tbody></table>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px" id="rpt-summary-cards"></div>
     </div>
 
     <!-- ══════════════════════════════════════
@@ -527,14 +547,22 @@ tr.row-out td{background:#fff5f5!important}
     <div class="page" id="page-ledger">
       <div class="report-filter-bar no-print">
         <label>PARTY / LEDGER</label>
-        <select id="ldg-party" onchange="runLedger()" style="min-width:200px">
-          <option value="">-- Select Party --</option>
-          <optgroup label="SUPPLIERS" id="ldg-suppliers"></optgroup>
-          <optgroup label="CUSTOMERS" id="ldg-customers"></optgroup>
-        </select>
+        <div id="ldg-party-wrap" style="position:relative;display:inline-block;min-width:220px">
+          <div id="ldg-party-display" onclick="toggleLdgDropdown()" style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12.5px;color:var(--text);min-width:220px;user-select:none">
+            <span id="ldg-party-label" style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text3)">-- Select Party --</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;flex-shrink:0;color:var(--text3)"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div id="ldg-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:260px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:999;overflow:hidden">
+            <div style="padding:8px 8px 4px;border-bottom:1px solid var(--border)">
+              <div class="search-box" style="background:var(--surface2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="ldg-search" placeholder="Search party..." oninput="filterLedgerParties(this.value)" style="width:150px" autocomplete="off"></div>
+            </div>
+            <div id="ldg-options-list" style="max-height:220px;overflow-y:auto;padding:4px 0"></div>
+          </div>
+          <input type="hidden" id="ldg-party" value="">
+        </div>
         <label>FROM</label><input type="date" id="ldg-from">
         <label>TO</label><input type="date" id="ldg-to">
-        <button class="btn btn-primary btn-sm" onclick="runLedger()">View Ledger</button>
+        <button class="btn btn-red btn-sm" id="ldg-view-btn" onclick="runLedger()">View Ledger</button>
         <button class="btn btn-ghost btn-sm" onclick="window.print()">&#128438; Print</button>
       </div>
       <div id="ldg-summary-bar" style="display:none;padding:12px 18px;background:var(--accent-light);border-bottom:1px solid var(--border)"></div>
@@ -549,10 +577,22 @@ tr.row-out td{background:#fff5f5!important}
     <div class="page" id="page-prodledger">
       <div class="report-filter-bar no-print">
         <label>ITEM / SKU</label>
-        <select id="pldg-item" style="min-width:240px"><option value="">-- Select Item --</option></select>
+        <div id="pldg-item-wrap" style="position:relative;display:inline-block;min-width:240px">
+          <div id="pldg-item-display" onclick="togglePldgDropdown()" style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12.5px;color:var(--text);min-width:240px;user-select:none">
+            <span id="pldg-item-label" style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text3)">-- Select Item --</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;flex-shrink:0;color:var(--text3)"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div id="pldg-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:280px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;box-shadow:var(--shadow-lg);z-index:999;overflow:hidden">
+            <div style="padding:8px 8px 4px;border-bottom:1px solid var(--border)">
+              <div class="search-box" style="background:var(--surface2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="pldg-search" placeholder="Search item..." oninput="filterProductLedgerItems(this.value)" style="width:160px" autocomplete="off"></div>
+            </div>
+            <div id="pldg-options-list" style="max-height:220px;overflow-y:auto;padding:4px 0"></div>
+          </div>
+          <input type="hidden" id="pldg-item" value="">
+        </div>
         <label>FROM</label><input type="date" id="pldg-from">
         <label>TO</label><input type="date" id="pldg-to">
-        <button class="btn btn-primary btn-sm" onclick="runProductLedger()">View Ledger</button>
+        <button class="btn btn-red btn-sm" id="pldg-view-btn" onclick="runProductLedger()">View Ledger</button>
         <button class="btn btn-ghost btn-sm" onclick="exportProdLedgerCSV()">&#10515; CSV</button>
         <button class="btn btn-ghost btn-sm" onclick="window.print()">&#128438; Print</button>
       </div>
@@ -570,12 +610,19 @@ tr.row-out td{background:#fff5f5!important}
     <div class="page" id="page-masters">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Masters — MFR / Supplier / Customer</div>
+          <div class="card-title" id="masters-card-title">Masters — MFR / Supplier / Customer</div>
           <div class="card-actions">
             <div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" id="master-search" placeholder="Search..." oninput="renderMasters()"></div>
-            <button class="btn btn-purple btn-sm" onclick="openMasterModal('MFR')">+ Add MFR</button>
-            <button class="btn btn-green btn-sm" onclick="openMasterModal('SUPPLIER')">+ Add Supplier</button>
-            <button class="btn btn-amber btn-sm" onclick="openMasterModal('CUSTOMER')">+ Add Customer</button>
+            <span id="master-party-actions">
+              <button class="btn btn-purple btn-sm" onclick="openMasterModal('MFR')">+ Add MFR</button>
+              <button class="btn btn-green btn-sm" onclick="openMasterModal('SUPPLIER')">+ Add Supplier</button>
+              <button class="btn btn-amber btn-sm" onclick="openMasterModal('CUSTOMER')">+ Add Customer</button>
+            </span>
+            <span id="master-item-actions" style="display:none">
+              <button class="btn btn-ghost btn-sm" onclick="exportItemMasterCSV()">&#10515; CSV</button>
+              <button class="btn btn-ghost btn-sm" onclick="window.print()">&#128438; Print</button>
+              <button class="btn btn-primary btn-sm" onclick="openAddItemModal()">+ Add Item</button>
+            </span>
           </div>
         </div>
         <div style="padding:14px 18px 4px">
@@ -584,9 +631,16 @@ tr.row-out td{background:#fff5f5!important}
             <div class="type-tab mfr" id="mtab-MFR" onclick="setMasterTab('MFR')">Manufacturers</div>
             <div class="type-tab sup" id="mtab-SUPPLIER" onclick="setMasterTab('SUPPLIER')">Suppliers</div>
             <div class="type-tab cust" id="mtab-CUSTOMER" onclick="setMasterTab('CUSTOMER')">Customers</div>
+            <div class="type-tab" id="mtab-ITEMS" onclick="setMasterTab('ITEMS')">Item Master</div>
           </div>
         </div>
         <div id="masters-grid" class="master-grid"></div>
+        <div id="masters-items-wrap" style="display:none">
+          <div class="table-wrap">
+            <table><thead><tr><th>#</th><th>CATEGORY</th><th>ITEM CODE</th><th>ITEM NAME</th><th>MANUFACTURER</th><th>UNIT</th><th>DESCRIPTION</th><th style="text-align:right">RATE (&#8377;)</th><th style="text-align:right">GST %</th></tr></thead>
+            <tbody id="item-master-table"></tbody></table>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -806,8 +860,53 @@ function getModalItems(tId){
 // MASTERS
 // ══════════════════════════════════════
 var masterTypeColors={MFR:{bg:'var(--purple-light)',color:'var(--purple)',border:'#ddd6fe'},SUPPLIER:{bg:'var(--green-light)',color:'var(--green)',border:'#bbf7d0'},CUSTOMER:{bg:'var(--amber-light)',color:'var(--amber)',border:'#fde68a'}};
-function setMasterTab(tab){masterTab=tab;document.querySelectorAll('.type-tab').forEach(function(t){t.classList.remove('active');});var el=document.getElementById('mtab-'+tab);if(el)el.classList.add('active');renderMasters();}
+function setMasterTab(tab){
+  masterTab=tab;
+  document.querySelectorAll('#page-masters .type-tab').forEach(function(t){t.classList.remove('active');});
+  var el=document.getElementById('mtab-'+tab);if(el)el.classList.add('active');
+  var isItems=tab==='ITEMS';
+  var grid=document.getElementById('masters-grid');if(grid)grid.style.display=isItems?'none':'grid';
+  var iw=document.getElementById('masters-items-wrap');if(iw)iw.style.display=isItems?'block':'none';
+  var pa=document.getElementById('master-party-actions');if(pa)pa.style.display=isItems?'none':'inline';
+  var ia=document.getElementById('master-item-actions');if(ia)ia.style.display=isItems?'inline':'none';
+  var ct=document.getElementById('masters-card-title');if(ct)ct.textContent=isItems?'Item Master — All Items':'Masters — MFR / Supplier / Customer';
+  var si=document.getElementById('master-search');if(si)si.placeholder=isItems?'Search items...':'Search...';
+  renderMasters();
+}
+function itemMasterList(){
+  var q=(document.getElementById('master-search')?document.getElementById('master-search').value:'').toLowerCase();
+  return cache.inventory.filter(function(i){
+    if(!q)return true;
+    return((i.name||'')+(i.code||'')+(i.mfr||'')+(i.category||'')+(i.desc||'')).toLowerCase().includes(q);
+  }).slice().sort(function(a,b){return(a.name||'').localeCompare(b.name||'');});
+}
+function renderItemMaster(){
+  var tbody=document.getElementById('item-master-table');if(!tbody)return;
+  var list=itemMasterList();
+  if(!list.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><h3>No items found</h3><p>Add items using the + Add Item button.</p></div></td></tr>';return;}
+  tbody.innerHTML=list.map(function(i,n){
+    return'<tr><td style="color:var(--text3);font-family:monospace;font-size:11px">'+(n+1)+'</td>'+
+      '<td><span class="badge badge-purple" style="font-size:9.5px">'+esc(i.category||'-')+'</span></td>'+
+      '<td><span class="badge badge-blue">'+esc(i.code)+'</span></td>'+
+      '<td><strong>'+esc(i.name)+'</strong></td>'+
+      '<td style="color:var(--text3)">'+esc(i.mfr||'-')+'</td>'+
+      '<td>'+esc(i.unit||'PCS')+'</td>'+
+      '<td style="color:var(--text3);font-size:11.5px">'+esc(i.desc||'-')+'</td>'+
+      '<td style="text-align:right;font-family:monospace">₹'+fmt(i.price)+'</td>'+
+      '<td style="text-align:right"><span class="gst-pill">'+(i.gst||0)+'%</span></td></tr>';
+  }).join('');
+}
+function exportItemMasterCSV(){
+  var list=itemMasterList();
+  if(!list.length){toast('Nothing to export','info');return;}
+  var rows=[['#','Category','Item Code','Item Name','Manufacturer','Unit','Description','Rate','GST %']];
+  list.forEach(function(i,n){rows.push([n+1,i.category||'',i.code||'',i.name||'',i.mfr||'',i.unit||'',i.desc||'',i.price||0,i.gst||0]);});
+  var csv=rows.map(function(r){return r.map(function(c){return'"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='item-master-'+today()+'.csv';a.click();
+  toast('Item Master exported!','success');
+}
 function renderMasters(){
+  if(masterTab==='ITEMS'){renderItemMaster();return;}
   var q=(document.getElementById('master-search')?document.getElementById('master-search').value:'').toLowerCase();
   var list=cache.masters.filter(function(m){if(masterTab!=='ALL'&&m.type!==masterTab)return false;if(!q)return true;return(m.name+m.code+m.phone+m.email+m.gstNo+m.address+m.contactPerson).toLowerCase().includes(q);});
   var grid=document.getElementById('masters-grid');if(!grid)return;
@@ -855,6 +954,15 @@ function saveItem(){
 function deleteItem(code){if(!confirm('Delete item '+code+'?'))return;showLoading('Deleting...');apiPost({action:'deleteItem',doc:{code:code}}).then(function(res){hideLoading();if(res.status!=='ok'){toast('Error: '+res.message,'error');return;}loadAll();toast('Item deleted.','info');}).catch(function(e){hideLoading();toast('Error: '+e.message,'error');});}
 function renderInventory(filter){
   filter=(filter||'').toLowerCase();var showZero=document.getElementById('inv-show-zero')&&document.getElementById('inv-show-zero').checked;var tbody=document.getElementById('inventory-table');
+  // Update banner from full inventory (not filtered)
+  var allInv=cache.inventory;
+  var totalVal=allInv.reduce(function(s,i){return s+i.stock*i.price;},0);
+  var inStock=allInv.filter(function(i){return i.stock>i.reorder;}).length;
+  var lowOut=allInv.filter(function(i){return i.stock<=i.reorder;}).length;
+  var tvEl=document.getElementById('inv-total-value');if(tvEl)tvEl.textContent='₹'+fmt(totalVal);
+  var skuEl=document.getElementById('inv-total-skus');if(skuEl)skuEl.textContent=allInv.length;
+  var isEl=document.getElementById('inv-total-instock');if(isEl)isEl.textContent=inStock;
+  var loEl=document.getElementById('inv-total-low');if(loEl)loEl.textContent=lowOut;
   var items=cache.inventory.filter(function(i){if(!showZero&&i.stock===0)return false;return!filter||i.name.toLowerCase().includes(filter)||i.code.toLowerCase().includes(filter)||i.mfr.toLowerCase().includes(filter)||i.category.toLowerCase().includes(filter);});
   if(!items.length){tbody.innerHTML='<tr><td colspan="11"><div class="empty-state"><h3>No items found</h3></div></td></tr>';return;}
   tbody.innerHTML=items.map(function(item){
@@ -1272,24 +1380,99 @@ function exportListCSV(type){
 }
 
 // ── LEDGER ──
-function populateLedgerParties(){
-  var sg=document.getElementById('ldg-suppliers');var cg=document.getElementById('ldg-customers');if(!sg||!cg)return;
-  sg.innerHTML=cache.masters.filter(function(m){return m.type==='SUPPLIER';}).map(function(m){return'<option value="'+esc(m.name)+'">'+esc(m.name)+'</option>';}).join('');
-  cg.innerHTML=cache.masters.filter(function(m){return m.type==='CUSTOMER';}).map(function(m){return'<option value="'+esc(m.name)+'">'+esc(m.name)+'</option>';}).join('');
+function populateLedgerParties(q){
+  q=(q||'').toLowerCase();
+  var list=document.getElementById('ldg-options-list');if(!list)return;
+  var sups=cache.masters.filter(function(m){return m.type==='SUPPLIER'&&(!q||m.name.toLowerCase().includes(q));}).slice().sort(function(a,b){return a.name.localeCompare(b.name);});
+  var custs=cache.masters.filter(function(m){return m.type==='CUSTOMER'&&(!q||m.name.toLowerCase().includes(q));}).slice().sort(function(a,b){return a.name.localeCompare(b.name);});
+  var html='';
+  if(!q||'all ledgers all parties'.includes(q)){
+    html+='<div onclick="selectLdgParty(\'__ALL__\')" style="padding:9px 14px;font-size:13px;cursor:pointer;font-weight:700;color:var(--accent);background:var(--accent-light);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px" onmouseover="this.style.filter=\'brightness(.96)\'" onmouseout="this.style.filter=\'\'">&#9776; All Ledgers <span style="font-size:9.5px;font-weight:500;color:var(--text3);font-family:JetBrains Mono,monospace">('+(sups.length+custs.length)+' parties)</span></div>';
+  }
+  if(sups.length){html+='<div style="padding:5px 12px 3px;font-size:9px;color:var(--text3);font-family:JetBrains Mono,monospace;letter-spacing:1px">SUPPLIERS</div>';html+=sups.map(function(m){return'<div class="ldg-opt" onclick="selectLdgParty(\''+esc(m.name)+'\')" style="padding:7px 14px;font-size:13px;cursor:pointer;color:var(--text);transition:.1s" onmouseover="this.style.background=\'var(--accent-light)\'" onmouseout="this.style.background=\'\'">'+esc(m.name)+'</div>';}).join('');}
+  if(custs.length){html+='<div style="padding:5px 12px 3px;font-size:9px;color:var(--text3);font-family:JetBrains Mono,monospace;letter-spacing:1px;'+(sups.length?'border-top:1px solid var(--border);margin-top:4px':'')+'"">CUSTOMERS</div>';html+=custs.map(function(m){return'<div class="ldg-opt" onclick="selectLdgParty(\''+esc(m.name)+'\')" style="padding:7px 14px;font-size:13px;cursor:pointer;color:var(--text);transition:.1s" onmouseover="this.style.background=\'var(--accent-light)\'" onmouseout="this.style.background=\'\'">'+esc(m.name)+'</div>';}).join('');}
+  if(!html)html='<div style="padding:12px 14px;font-size:12px;color:var(--text3)">No parties found</div>';
+  list.innerHTML=html;
 }
+function filterLedgerParties(q){populateLedgerParties(q);}
+function toggleLdgDropdown(){
+  var dd=document.getElementById('ldg-dropdown');var open=dd.style.display==='block';
+  closeLedgerDropdowns();
+  if(!open){dd.style.display='block';var si=document.getElementById('ldg-search');if(si){si.value='';si.focus();}populateLedgerParties('');}
+}
+function selectLdgParty(name){
+  document.getElementById('ldg-party').value=name;
+  document.getElementById('ldg-party-label').textContent=(name==='__ALL__'?'All Ledgers (All Parties)':name);
+  document.getElementById('ldg-party-label').style.color='var(--text)';
+  document.getElementById('ldg-dropdown').style.display='none';
+  var btn=document.getElementById('ldg-view-btn');if(btn)btn.className='btn btn-red btn-sm';
+}
+function closeLedgerDropdowns(){
+  var d1=document.getElementById('ldg-dropdown');if(d1)d1.style.display='none';
+  var d2=document.getElementById('pldg-dropdown');if(d2)d2.style.display='none';
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#ldg-party-wrap'))document.getElementById('ldg-dropdown')&&(document.getElementById('ldg-dropdown').style.display='none');
+  if(!e.target.closest('#pldg-item-wrap'))document.getElementById('pldg-dropdown')&&(document.getElementById('pldg-dropdown').style.display='none');
+});
+function setLdgBtnState(hasData){var btn=document.getElementById('ldg-view-btn');if(!btn)return;btn.className=hasData?'btn btn-green btn-sm':'btn btn-red btn-sm';}
 function runLedger(){
   var party=document.getElementById('ldg-party').value;var from=document.getElementById('ldg-from').value;var to=document.getElementById('ldg-to').value;if(!party)return;
+  if(party==='__ALL__'){return runAllLedgers(from,to);}
   document.getElementById('ldg-title').textContent='Ledger: '+party;var entries=[];
   cache.receipts.filter(function(r){return r.supplier===party&&(!from||r.date>=from)&&(!to||r.date<=to);}).forEach(function(r){entries.push({date:r.date,no:r.no,type:'Receipt',desc:'Goods Receipt from '+r.supplier,debit:r.total,credit:0});});
   cache.supply.filter(function(s){return s.customer===party&&(!from||s.date>=from)&&(!to||s.date<=to);}).forEach(function(s){entries.push({date:s.date,no:s.no,type:'Supply',desc:'Supply to '+s.customer,debit:0,credit:s.total});});
   cache.po.filter(function(p){return p.supplier===party&&(!from||p.date>=from)&&(!to||p.date<=to);}).forEach(function(p){entries.push({date:p.date,no:p.no,type:'PO',desc:'Purchase Order to '+p.supplier,debit:p.total,credit:0});});
   entries.sort(function(a,b){return a.date<b.date?-1:1;});
   var balance=0;var tbody=document.getElementById('ldg-table');
-  if(!entries.length){tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><h3>No transactions found</h3></div></td></tr>';document.getElementById('ldg-summary-bar').style.display='none';return;}
+  if(!entries.length){tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><h3>No transactions found</h3></div></td></tr>';document.getElementById('ldg-summary-bar').style.display='none';setLdgBtnState(false);return;}
   tbody.innerHTML=entries.map(function(e){balance+=e.debit-e.credit;var rowCls=e.debit>0?'ledger-row-dr':'ledger-row-cr';var tc={Receipt:'badge-blue',Supply:'badge-amber',PO:'badge-green'}[e.type]||'badge-blue';return'<tr class="'+rowCls+'"><td>'+fmtDate(e.date)+'</td><td><span class="badge '+tc+'">'+e.no+'</span></td><td>'+e.type+'</td><td>'+e.desc+'</td><td style="text-align:right;font-family:monospace;color:var(--green)">'+(e.debit>0?'₹'+fmt(e.debit):'')+'</td><td style="text-align:right;font-family:monospace;color:var(--amber)">'+(e.credit>0?'₹'+fmt(e.credit):'')+'</td><td style="text-align:right;font-family:monospace;font-weight:700;color:'+(balance>=0?'var(--accent)':'var(--red)')+'">₹'+fmt(Math.abs(balance))+(balance>=0?' Dr':' Cr')+'</td></tr>';}).join('');
   var sb=document.getElementById('ldg-summary-bar');sb.style.display='flex';sb.style.gap='20px';sb.style.padding='10px 18px';sb.style.flexWrap='wrap';
   var totDr=entries.reduce(function(s,e){return s+e.debit;},0);var totCr=entries.reduce(function(s,e){return s+e.credit;},0);var netBal=totDr-totCr;
   sb.innerHTML='<strong>'+party+'</strong><span>Total Debit: <strong>₹'+fmt(totDr)+'</strong></span><span>Total Credit: <strong>₹'+fmt(totCr)+'</strong></span><span style="font-weight:700;color:'+(netBal>=0?'var(--accent)':'var(--red)')+'">Net Balance: ₹'+fmt(Math.abs(netBal))+(netBal>=0?' Dr':' Cr')+'</span>';
+  setLdgBtnState(true);
+}
+
+// ── ALL LEDGERS (consolidated view of every party) ──
+function ledgerEntriesFor(party,from,to){
+  var entries=[];
+  cache.receipts.filter(function(r){return r.supplier===party&&(!from||r.date>=from)&&(!to||r.date<=to);}).forEach(function(r){entries.push({date:r.date,no:r.no,type:'Receipt',desc:'Goods Receipt from '+r.supplier,debit:r.total,credit:0});});
+  cache.supply.filter(function(s){return s.customer===party&&(!from||s.date>=from)&&(!to||s.date<=to);}).forEach(function(s){entries.push({date:s.date,no:s.no,type:'Supply',desc:'Supply to '+s.customer,debit:0,credit:s.total});});
+  cache.po.filter(function(p){return p.supplier===party&&(!from||p.date>=from)&&(!to||p.date<=to);}).forEach(function(p){entries.push({date:p.date,no:p.no,type:'PO',desc:'Purchase Order to '+p.supplier,debit:p.total,credit:0});});
+  entries.sort(function(a,b){return a.date<b.date?-1:1;});
+  return entries;
+}
+function runAllLedgers(from,to){
+  document.getElementById('ldg-title').textContent='All Ledgers — Consolidated'+(from||to?' ('+(from?fmtDate(from):'Start')+' to '+(to?fmtDate(to):'Today')+')':'');
+  var parties=cache.masters.filter(function(m){return m.type==='SUPPLIER'||m.type==='CUSTOMER';})
+    .slice().sort(function(a,b){return a.type===b.type?a.name.localeCompare(b.name):(a.type==='SUPPLIER'?-1:1);});
+  var tbody=document.getElementById('ldg-table');
+  var rows='',gDr=0,gCr=0,active=0,lastType='';
+  parties.forEach(function(m){
+    var entries=ledgerEntriesFor(m.name,from,to);
+    if(!entries.length)return;
+    active++;
+    if(m.type!==lastType){lastType=m.type;rows+='<tr><td colspan="7" style="background:var(--surface2);padding:6px 12px;font-size:9.5px;letter-spacing:1.4px;font-family:JetBrains Mono,monospace;color:var(--text3);font-weight:700">'+(m.type==='SUPPLIER'?'SUPPLIERS':'CUSTOMERS')+'</td></tr>';}
+    var pDr=entries.reduce(function(s,e){return s+e.debit;},0),pCr=entries.reduce(function(s,e){return s+e.credit;},0),pBal=pDr-pCr;
+    gDr+=pDr;gCr+=pCr;
+    var tcls=m.type==='SUPPLIER'?'badge-green':'badge-amber';
+    rows+='<tr><td colspan="7" style="background:var(--accent-light);padding:8px 12px;border-top:1.5px solid var(--border)"><span class="badge '+tcls+'" style="font-size:9px">'+(m.type==='SUPPLIER'?'SUP':'CUST')+'</span> <strong style="font-size:13px">'+esc(m.name)+'</strong> <span style="font-size:10px;color:var(--text3);font-family:monospace">'+m.code+' &middot; '+entries.length+' txn</span></td></tr>';
+    var bal=0;
+    rows+=entries.map(function(e){
+      bal+=e.debit-e.credit;
+      var rowCls=e.debit>0?'ledger-row-dr':'ledger-row-cr';
+      var tc={Receipt:'badge-blue',Supply:'badge-amber',PO:'badge-green'}[e.type]||'badge-blue';
+      return'<tr class="'+rowCls+'"><td>'+fmtDate(e.date)+'</td><td><span class="badge '+tc+'">'+e.no+'</span></td><td>'+e.type+'</td><td>'+e.desc+'</td><td style="text-align:right;font-family:monospace;color:var(--green)">'+(e.debit>0?'₹'+fmt(e.debit):'')+'</td><td style="text-align:right;font-family:monospace;color:var(--amber)">'+(e.credit>0?'₹'+fmt(e.credit):'')+'</td><td style="text-align:right;font-family:monospace;font-weight:700;color:'+(bal>=0?'var(--accent)':'var(--red)')+'">₹'+fmt(Math.abs(bal))+(bal>=0?' Dr':' Cr')+'</td></tr>';
+    }).join('');
+    rows+='<tr style="background:var(--surface2);font-weight:700"><td colspan="4" style="text-align:right;font-size:11.5px;color:var(--text2)">Closing — '+esc(m.name)+'</td><td style="text-align:right;font-family:monospace;color:var(--green)">₹'+fmt(pDr)+'</td><td style="text-align:right;font-family:monospace;color:var(--amber)">₹'+fmt(pCr)+'</td><td style="text-align:right;font-family:monospace;color:'+(pBal>=0?'var(--accent)':'var(--red)')+'">₹'+fmt(Math.abs(pBal))+(pBal>=0?' Dr':' Cr')+'</td></tr>';
+  });
+  if(!active){tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><h3>No transactions found</h3><p>No party has activity in the selected date range.</p></div></td></tr>';document.getElementById('ldg-summary-bar').style.display='none';setLdgBtnState(false);return;}
+  var gNet=gDr-gCr;
+  rows+='<tr style="background:var(--text);color:#fff;font-weight:800"><td colspan="4" style="text-align:right;color:#fff">GRAND TOTAL ('+active+' parties)</td><td style="text-align:right;font-family:monospace;color:#fff">₹'+fmt(gDr)+'</td><td style="text-align:right;font-family:monospace;color:#fff">₹'+fmt(gCr)+'</td><td style="text-align:right;font-family:monospace;color:#fff">₹'+fmt(Math.abs(gNet))+(gNet>=0?' Dr':' Cr')+'</td></tr>';
+  tbody.innerHTML=rows;
+  var sb=document.getElementById('ldg-summary-bar');sb.style.display='flex';sb.style.gap='20px';sb.style.padding='10px 18px';sb.style.flexWrap='wrap';
+  sb.innerHTML='<strong>All Ledgers</strong><span>Parties with activity: <strong>'+active+'</strong> / '+parties.length+'</span><span>Total Debit: <strong>₹'+fmt(gDr)+'</strong></span><span>Total Credit: <strong>₹'+fmt(gCr)+'</strong></span><span style="font-weight:700;color:'+(gNet>=0?'var(--accent)':'var(--red)')+'">Net Balance: ₹'+fmt(Math.abs(gNet))+(gNet>=0?' Dr':' Cr')+'</span>';
+  setLdgBtnState(true);
 }
 
 // ── CHART HELPERS ──
@@ -1309,29 +1492,97 @@ function getMonthRange(fromDate,toDate){
 function groupByMonth(arr,dateKey,valKey){var m={};arr.forEach(function(x){var k=(x[dateKey]||'').slice(0,7);if(k)m[k]=(m[k]||0)+x[valKey];});return m;}
 
 // ── PRODUCT LEDGER ──
-var _pldgData=[];
-function initProductLedger(){
-  var sel=document.getElementById('pldg-item');if(!sel)return;
-  sel.innerHTML='<option value="">-- Select Item --</option>'+cache.inventory.map(function(i){return'<option value="'+i.code+'">'+i.name+' ('+i.code+')</option>';}).join('');
+var _pldgData=[];var _pldgAllMode=false;
+function initProductLedger(q){
+  q=(q||'').toLowerCase();
+  var list=document.getElementById('pldg-options-list');if(!list)return;
+  var items=cache.inventory.slice().sort(function(a,b){return a.name.localeCompare(b.name);});
+  if(q)items=items.filter(function(i){return i.name.toLowerCase().includes(q)||i.code.toLowerCase().includes(q);});
+  var head='';
+  if(!q||'all ledgers all items'.includes(q)){
+    head='<div onclick="selectPldgItem(\'__ALL__\',\'All Ledgers (All Items)\')" style="padding:9px 14px;font-size:13px;cursor:pointer;font-weight:700;color:var(--accent);background:var(--accent-light);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px" onmouseover="this.style.filter=\'brightness(.96)\'" onmouseout="this.style.filter=\'\'">&#9776; All Ledgers <span style="font-size:9.5px;font-weight:500;color:var(--text3);font-family:JetBrains Mono,monospace">('+items.length+' items)</span></div>';
+  }
+  if(!items.length){list.innerHTML=head+'<div style="padding:12px 14px;font-size:12px;color:var(--text3)">No items found</div>';return;}
+  list.innerHTML=head+items.map(function(i){return'<div onclick="selectPldgItem(\''+i.code+'\',\''+esc(i.name)+' ('+i.code+')\''+')" style="padding:7px 14px;font-size:13px;cursor:pointer;color:var(--text);transition:.1s" onmouseover="this.style.background=\'var(--accent-light)\'" onmouseout="this.style.background=\'\'"><span style="font-weight:600">'+esc(i.name)+'</span> <span style="font-size:10px;color:var(--text3);font-family:monospace">('+i.code+')</span></div>';}).join('');
   var f=document.getElementById('pldg-from');var t=document.getElementById('pldg-to');
   if(f&&!f.value)f.value=new Date().getFullYear()+'-01-01';if(t&&!t.value)t.value=today();
 }
+function filterProductLedgerItems(q){initProductLedger(q);}
+function togglePldgDropdown(){
+  var dd=document.getElementById('pldg-dropdown');var open=dd.style.display==='block';
+  closeLedgerDropdowns();
+  if(!open){dd.style.display='block';var si=document.getElementById('pldg-search');if(si){si.value='';si.focus();}initProductLedger('');}
+}
+function selectPldgItem(code,label){
+  document.getElementById('pldg-item').value=code;
+  document.getElementById('pldg-item-label').textContent=label;
+  document.getElementById('pldg-item-label').style.color='var(--text)';
+  document.getElementById('pldg-dropdown').style.display='none';
+  var btn=document.getElementById('pldg-view-btn');if(btn)btn.className='btn btn-red btn-sm';
+}
 function runProductLedger(){
   var code=document.getElementById('pldg-item').value;var from=document.getElementById('pldg-from').value;var to=document.getElementById('pldg-to').value;
-  if(!code){toast('Select an item first.','error');return;}var item=cache.inventory.find(function(i){return i.code===code;});if(!item)return;
+  if(!code){toast('Select an item first.','error');return;}
+  if(code==='__ALL__'){return runAllProductLedgers(from,to);}
+  var item=cache.inventory.find(function(i){return i.code===code;});if(!item)return;
   document.getElementById('pldg-title').textContent='Product Ledger: '+item.name+' ('+item.code+')';var entries=[];
   cache.receipts.filter(function(r){return(!from||r.date>=from)&&(!to||r.date<=to);}).forEach(function(r){r.items.forEach(function(it){if(it.item===code)entries.push({date:r.date,no:r.no,type:'Receipt',party:r.supplier,inQty:it.qty,outQty:0,rate:it.rate});});});
   cache.supply.filter(function(s){return(!from||s.date>=from)&&(!to||s.date<=to);}).forEach(function(s){s.items.forEach(function(it){if(it.item===code)entries.push({date:s.date,no:s.no,type:'Supply',party:s.customer,inQty:0,outQty:it.qty,rate:it.rate});});});
-  entries.sort(function(a,b){return a.date<b.date?-1:1;});_pldgData=entries;
+  entries.sort(function(a,b){return a.date<b.date?-1:1;});_pldgData=entries;_pldgAllMode=false;
   var tbody=document.getElementById('pldg-table');var sb=document.getElementById('pldg-summary-bar');
-  if(!entries.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><h3>No transactions in selected range</h3></div></td></tr>';sb.style.display='none';return;}
+  if(!entries.length){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><h3>No transactions in selected range</h3></div></td></tr>';sb.style.display='none';var pb=document.getElementById('pldg-view-btn');if(pb)pb.className='btn btn-red btn-sm';return;}
   var balance=0,totIn=0,totOut=0,lastRate=item.price;
   tbody.innerHTML=entries.map(function(e){balance+=e.inQty-e.outQty;totIn+=e.inQty;totOut+=e.outQty;if(e.rate)lastRate=e.rate;var value=r2(balance*lastRate);var tc=e.type==='Receipt'?'badge-blue':'badge-amber';var rowBg=e.inQty>0?'background:#f7fff9':'background:#fff7f7';var balColor=balance>0?'var(--accent)':'var(--red)';return'<tr style="'+rowBg+'"><td>'+fmtDate(e.date)+'</td><td><span class="badge '+tc+'">'+e.no+'</span></td><td>'+e.type+'</td><td>'+e.party+'</td><td style="text-align:right;font-family:monospace;color:var(--green);font-weight:700">'+(e.inQty>0?'+'+e.inQty:'—')+'</td><td style="text-align:right;font-family:monospace;color:var(--red);font-weight:700">'+(e.outQty>0?'-'+e.outQty:'—')+'</td><td style="text-align:right;font-family:monospace;font-weight:700;color:'+balColor+'">'+balance+' '+item.unit+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(lastRate)+'</td><td style="text-align:right;font-family:monospace;font-weight:600">₹'+fmt(value)+'</td></tr>';}).join('');
   sb.style.display='flex';sb.innerHTML='<div class="pldg-stat"><div class="pldg-stat-label">ITEM</div><div class="pldg-stat-val" style="font-size:13px">'+item.name+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">TOTAL IN</div><div class="pldg-stat-val" style="color:var(--green)">+'+totIn+' '+item.unit+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">TOTAL OUT</div><div class="pldg-stat-val" style="color:var(--red)">-'+totOut+' '+item.unit+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">NET MOVEMENT</div><div class="pldg-stat-val">'+(totIn-totOut>=0?'+':'')+(totIn-totOut)+' '+item.unit+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">CURRENT STOCK</div><div class="pldg-stat-val" style="color:var(--accent)">'+item.stock+' '+item.unit+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">STOCK VALUE</div><div class="pldg-stat-val" style="color:var(--accent)">₹'+fmt(item.stock*item.price)+'</div></div>';
+  var pb=document.getElementById('pldg-view-btn');if(pb)pb.className='btn btn-green btn-sm';
+}
+// ── ALL PRODUCT LEDGERS (every item, consolidated) ──
+function prodEntriesFor(code,from,to){
+  var entries=[];
+  cache.receipts.filter(function(r){return(!from||r.date>=from)&&(!to||r.date<=to);}).forEach(function(r){r.items.forEach(function(it){if(it.item===code)entries.push({date:r.date,no:r.no,type:'Receipt',party:r.supplier,inQty:it.qty,outQty:0,rate:it.rate});});});
+  cache.supply.filter(function(s){return(!from||s.date>=from)&&(!to||s.date<=to);}).forEach(function(s){s.items.forEach(function(it){if(it.item===code)entries.push({date:s.date,no:s.no,type:'Supply',party:s.customer,inQty:0,outQty:it.qty,rate:it.rate});});});
+  entries.sort(function(a,b){return a.date<b.date?-1:1;});
+  return entries;
+}
+function runAllProductLedgers(from,to){
+  document.getElementById('pldg-title').textContent='All Product Ledgers — Consolidated'+(from||to?' ('+(from?fmtDate(from):'Start')+' to '+(to?fmtDate(to):'Today')+')':'');
+  var items=cache.inventory.slice().sort(function(a,b){return(a.name||'').localeCompare(b.name||'');});
+  var tbody=document.getElementById('pldg-table');var sb=document.getElementById('pldg-summary-bar');
+  var rows='',gIn=0,gOut=0,gVal=0,active=0,allData=[];
+  items.forEach(function(item){
+    var entries=prodEntriesFor(item.code,from,to);
+    if(!entries.length)return;
+    active++;
+    rows+='<tr><td colspan="9" style="background:var(--accent-light);padding:8px 12px;border-top:1.5px solid var(--border)"><span class="badge badge-purple" style="font-size:9px">'+esc(item.category||'-')+'</span> <strong style="font-size:13px">'+esc(item.name)+'</strong> <span style="font-size:10px;color:var(--text3);font-family:monospace">'+esc(item.code)+' &middot; '+entries.length+' txn &middot; stock '+item.stock+' '+item.unit+'</span></td></tr>';
+    var bal=0,tIn=0,tOut=0,lastRate=item.price;
+    rows+=entries.map(function(e){
+      bal+=e.inQty-e.outQty;tIn+=e.inQty;tOut+=e.outQty;if(e.rate)lastRate=e.rate;
+      allData.push({item:item,e:e,bal:bal,rate:lastRate});
+      var value=r2(bal*lastRate);var tc=e.type==='Receipt'?'badge-blue':'badge-amber';
+      var rowBg=e.inQty>0?'background:#f7fff9':'background:#fff7f7';var balColor=bal>0?'var(--accent)':'var(--red)';
+      return'<tr style="'+rowBg+'"><td>'+fmtDate(e.date)+'</td><td><span class="badge '+tc+'">'+e.no+'</span></td><td>'+e.type+'</td><td>'+esc(e.party||'')+'</td><td style="text-align:right;font-family:monospace;color:var(--green);font-weight:700">'+(e.inQty>0?'+'+e.inQty:'—')+'</td><td style="text-align:right;font-family:monospace;color:var(--red);font-weight:700">'+(e.outQty>0?'-'+e.outQty:'—')+'</td><td style="text-align:right;font-family:monospace;font-weight:700;color:'+balColor+'">'+bal+' '+item.unit+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(lastRate)+'</td><td style="text-align:right;font-family:monospace;font-weight:600">₹'+fmt(value)+'</td></tr>';
+    }).join('');
+    var closeVal=r2(bal*lastRate);gIn+=tIn;gOut+=tOut;gVal+=closeVal;
+    rows+='<tr style="background:var(--surface2);font-weight:700"><td colspan="4" style="text-align:right;font-size:11.5px;color:var(--text2)">Closing — '+esc(item.name)+'</td><td style="text-align:right;font-family:monospace;color:var(--green)">+'+tIn+'</td><td style="text-align:right;font-family:monospace;color:var(--red)">-'+tOut+'</td><td style="text-align:right;font-family:monospace;color:'+(bal>=0?'var(--accent)':'var(--red)')+'">'+bal+' '+item.unit+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(lastRate)+'</td><td style="text-align:right;font-family:monospace">₹'+fmt(closeVal)+'</td></tr>';
+  });
+  _pldgData=allData;_pldgAllMode=true;
+  if(!active){tbody.innerHTML='<tr><td colspan="9"><div class="empty-state"><h3>No transactions in selected range</h3><p>No item has movement in this period.</p></div></td></tr>';sb.style.display='none';var pb0=document.getElementById('pldg-view-btn');if(pb0)pb0.className='btn btn-red btn-sm';return;}
+  rows+='<tr style="background:var(--text);color:#fff;font-weight:800"><td colspan="4" style="text-align:right;color:#fff">GRAND TOTAL ('+active+' items)</td><td style="text-align:right;font-family:monospace;color:#fff">+'+gIn+'</td><td style="text-align:right;font-family:monospace;color:#fff">-'+gOut+'</td><td style="text-align:right;font-family:monospace;color:#fff">'+(gIn-gOut>=0?'+':'')+(gIn-gOut)+'</td><td style="color:#fff"></td><td style="text-align:right;font-family:monospace;color:#fff">₹'+fmt(gVal)+'</td></tr>';
+  tbody.innerHTML=rows;
+  var totStockVal=cache.inventory.reduce(function(s,i){return s+i.stock*i.price;},0);
+  sb.style.display='flex';
+  sb.innerHTML='<div class="pldg-stat"><div class="pldg-stat-label">SCOPE</div><div class="pldg-stat-val" style="font-size:13px">All Items</div></div><div class="pldg-stat"><div class="pldg-stat-label">ITEMS WITH MOVEMENT</div><div class="pldg-stat-val">'+active+' / '+items.length+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">TOTAL IN</div><div class="pldg-stat-val" style="color:var(--green)">+'+gIn+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">TOTAL OUT</div><div class="pldg-stat-val" style="color:var(--red)">-'+gOut+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">NET MOVEMENT</div><div class="pldg-stat-val">'+(gIn-gOut>=0?'+':'')+(gIn-gOut)+'</div></div><div class="pldg-stat"><div class="pldg-stat-label">TOTAL STOCK VALUE</div><div class="pldg-stat-val" style="color:var(--accent)">₹'+fmt(totStockVal)+'</div></div>';
+  var pb=document.getElementById('pldg-view-btn');if(pb)pb.className='btn btn-green btn-sm';
 }
 function exportProdLedgerCSV(){
   if(!_pldgData.length){toast('Run the ledger first.','error');return;}
-  var code=document.getElementById('pldg-item').value;var item=cache.inventory.find(function(i){return i.code===code;});
+  var code=document.getElementById('pldg-item').value;
+  if(code==='__ALL__'&&_pldgAllMode){
+    var h='Item Code,Item Name,Category,Date,Doc No.,Type,Party,IN (Qty),OUT (Qty),Balance Qty,Unit,Rate (Rs),Value (Rs)';
+    var rs=_pldgData.map(function(d){return[d.item.code,'"'+d.item.name+'"','"'+(d.item.category||'')+'"',d.e.date,d.e.no,d.e.type,'"'+(d.e.party||'')+'"',d.e.inQty||'',d.e.outQty||'',d.bal,d.item.unit,d.rate,r2(d.bal*d.rate)].join(',');});
+    csvDown(h+'\n'+rs.join('\n'),'product_ledger_ALL_'+today()+'.csv');toast('CSV exported!','success');return;
+  }
+  var item=cache.inventory.find(function(i){return i.code===code;});
   var header='Date,Doc No.,Type,Party,IN (Qty),OUT (Qty),Balance Qty,Rate (Rs),Value (Rs)';var balance=0,lastRate=item?item.price:0;
   var rows=_pldgData.map(function(e){balance+=e.inQty-e.outQty;if(e.rate)lastRate=e.rate;return[e.date,e.no,e.type,'"'+e.party+'"',e.inQty||'',e.outQty||'',balance,lastRate,r2(balance*lastRate)].join(',');});
   csvDown(header+'\n'+rows.join('\n'),'product_ledger_'+code+'_'+today()+'.csv');toast('CSV exported!','success');
